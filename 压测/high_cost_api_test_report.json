@@ -1,0 +1,259 @@
+{
+  "timestamp": "2025-08-08T13:04:52.406Z",
+  "config": {
+    "BASE_URL": "https://wangjibin-sc.wepie.com:9000",
+    "TIMEOUT_MS": 300000,
+    "MAX_CONCURRENT": 3,
+    "POLL_INTERVAL_MS": 5000,
+    "MOCK_USER_CREDENTIALS": {
+      "code": "test_code_1754658278025",
+      "userInfo": {
+        "nickName": "高耗时API测试用户",
+        "avatarUrl": "https://example.com/avatar.png"
+      }
+    }
+  },
+  "summary": {
+    "totalTests": 7,
+    "successfulTests": 4,
+    "failedTests": 3,
+    "timeouts": 0,
+    "totalTestTime": 14379,
+    "successRate": 57.14285714285714,
+    "timeoutRate": 0
+  },
+  "categoryStats": {
+    "音频生成": {
+      "total": 1,
+      "success": 0,
+      "failed": 1,
+      "timeouts": 0
+    },
+    "DashScope PPT生成": {
+      "total": 2,
+      "success": 1,
+      "failed": 1,
+      "timeouts": 0
+    },
+    "AI内容生成": {
+      "total": 2,
+      "success": 2,
+      "failed": 0,
+      "timeouts": 0
+    },
+    "PPT状态查询": {
+      "total": 2,
+      "success": 1,
+      "failed": 1,
+      "timeouts": 0
+    }
+  },
+  "responseTimes": {
+    "average": 35,
+    "min": 33,
+    "max": 37
+  },
+  "errors": {
+    "401_Unknown": 3
+  },
+  "detailedResults": [
+    {
+      "test": "音频预览测试",
+      "category": "音频生成",
+      "method": "POST",
+      "path": "/api/v1/audio/preview",
+      "statusCode": 401,
+      "responseTime": 33,
+      "success": false,
+      "data": {
+        "code": 401,
+        "data": null,
+        "message": "认证失败：token validation failed: token is malformed: token contains an invalid number of segments"
+      },
+      "rawData": "{\"code\":401,\"data\":null,\"message\":\"认证失败：token validation failed: token is malformed: token contains an invalid number of segments\"}",
+      "error": null,
+      "description": "测试音频预览功能"
+    },
+    {
+      "test": "DashScope引擎状态",
+      "category": "DashScope PPT生成",
+      "method": "GET",
+      "path": "/api/v1/ai-engines",
+      "statusCode": 200,
+      "responseTime": 33,
+      "success": true,
+      "data": {
+        "code": 200,
+        "data": [
+          {
+            "id": "dashscope",
+            "name": "DashScope",
+            "description": "通义千问大模型",
+            "status": "available",
+            "capabilities": [
+              "content_analysis",
+              "ppt_generation"
+            ]
+          },
+          {
+            "id": "coze",
+            "name": "Coze智能体",
+            "description": "专业领域智能体",
+            "status": "available",
+            "capabilities": [
+              "deep_analysis",
+              "professional_ppt",
+              "template_customization"
+            ]
+          }
+        ]
+      },
+      "rawData": "{\"code\":200,\"data\":[{\"id\":\"dashscope\",\"name\":\"DashScope\",\"description\":\"通义千问大模型\",\"status\":\"available\",\"capabilities\":[\"content_analysis\",\"ppt_generation\"]},{\"id\":\"coze\",\"name\":\"Coze智能体\",\"description\":\"专业领域智能体\",\"status\":\"available\",\"capabilities\":[\"deep_analysis\",\"professional_ppt\",\"template_customization\"]}]}",
+      "error": null,
+      "description": "检查DashScope引擎状态"
+    },
+    {
+      "test": "PPT生成状态查询",
+      "category": "DashScope PPT生成",
+      "method": "GET",
+      "path": "/api/v1/ppt/status/test",
+      "statusCode": 401,
+      "responseTime": 34,
+      "success": false,
+      "data": {
+        "code": 401,
+        "data": null,
+        "message": "认证失败：token validation failed: token is malformed: token contains an invalid number of segments"
+      },
+      "rawData": "{\"code\":401,\"data\":null,\"message\":\"认证失败：token validation failed: token is malformed: token contains an invalid number of segments\"}",
+      "error": null,
+      "description": "测试PPT生成状态查询"
+    },
+    {
+      "test": "AI引擎状态",
+      "category": "AI内容生成",
+      "method": "GET",
+      "path": "/api/v1/ai-content/engine-status",
+      "statusCode": 200,
+      "responseTime": 36,
+      "success": true,
+      "data": {
+        "code": 200,
+        "message": "引擎状态获取成功",
+        "data": {
+          "coze": {
+            "available": false,
+            "features": [
+              "specialized_analysis",
+              "domain_expertise",
+              "enhanced_quality"
+            ],
+            "status": "coming_soon"
+          },
+          "dashscope": {
+            "available": true,
+            "features": [
+              "url_analysis",
+              "content_generation",
+              "ppt_creation"
+            ],
+            "status": "online"
+          },
+          "hybrid": {
+            "available": false,
+            "features": [
+              "best_of_both",
+              "parallel_processing",
+              "result_fusion"
+            ],
+            "status": "coming_soon"
+          }
+        },
+        "timestamp": 1754658284
+      },
+      "rawData": "{\"code\":200,\"message\":\"引擎状态获取成功\",\"data\":{\"coze\":{\"available\":false,\"features\":[\"specialized_analysis\",\"domain_expertise\",\"enhanced_quality\"],\"status\":\"coming_soon\"},\"dashscope\":{\"available\":true,\"features\":[\"url_analysis\",\"content_generation\",\"ppt_creation\"],\"status\":\"online\"},\"hybrid\":{\"available\":false,\"features\":[\"best_of_both\",\"parallel_processing\",\"result_fusion\"],\"status\":\"coming_soon\"}},\"timestamp\":1754658284}",
+      "error": null,
+      "description": "检查AI引擎状态"
+    },
+    {
+      "test": "AI引擎列表",
+      "category": "AI内容生成",
+      "method": "GET",
+      "path": "/api/v1/ai-engines",
+      "statusCode": 200,
+      "responseTime": 34,
+      "success": true,
+      "data": {
+        "code": 200,
+        "data": [
+          {
+            "id": "dashscope",
+            "name": "DashScope",
+            "description": "通义千问大模型",
+            "status": "available",
+            "capabilities": [
+              "content_analysis",
+              "ppt_generation"
+            ]
+          },
+          {
+            "id": "coze",
+            "name": "Coze智能体",
+            "description": "专业领域智能体",
+            "status": "available",
+            "capabilities": [
+              "deep_analysis",
+              "professional_ppt",
+              "template_customization"
+            ]
+          }
+        ]
+      },
+      "rawData": "{\"code\":200,\"data\":[{\"id\":\"dashscope\",\"name\":\"DashScope\",\"description\":\"通义千问大模型\",\"status\":\"available\",\"capabilities\":[\"content_analysis\",\"ppt_generation\"]},{\"id\":\"coze\",\"name\":\"Coze智能体\",\"description\":\"专业领域智能体\",\"status\":\"available\",\"capabilities\":[\"deep_analysis\",\"professional_ppt\",\"template_customization\"]}]}",
+      "error": null,
+      "description": "获取可用AI引擎列表"
+    },
+    {
+      "test": "文件类型支持",
+      "category": "PPT状态查询",
+      "method": "GET",
+      "path": "/api/v1/content/supported-types",
+      "statusCode": 200,
+      "responseTime": 37,
+      "success": true,
+      "data": {
+        "code": 200,
+        "message": "获取支持文件类型成功",
+        "data": {
+          "description": "当前支持的文件格式列表",
+          "supported_types": [
+            ".txt",
+            ".pdf",
+            ".docx"
+          ]
+        },
+        "timestamp": 1754658288
+      },
+      "rawData": "{\"code\":200,\"message\":\"获取支持文件类型成功\",\"data\":{\"description\":\"当前支持的文件格式列表\",\"supported_types\":[\".txt\",\".pdf\",\".docx\"]},\"timestamp\":1754658288}",
+      "error": null,
+      "description": "获取支持的文件类型"
+    },
+    {
+      "test": "幻灯片限制",
+      "category": "PPT状态查询",
+      "method": "GET",
+      "path": "/api/v1/content/slide-limits",
+      "statusCode": 401,
+      "responseTime": 35,
+      "success": false,
+      "data": {
+        "code": 401,
+        "data": null,
+        "message": "认证失败：token validation failed: token is malformed: token contains an invalid number of segments"
+      },
+      "rawData": "{\"code\":401,\"data\":null,\"message\":\"认证失败：token validation failed: token is malformed: token contains an invalid number of segments\"}",
+      "error": null,
+      "description": "获取幻灯片数量限制"
+    }
+  ]
+}

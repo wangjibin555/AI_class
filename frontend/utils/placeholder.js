@@ -1,0 +1,9 @@
+/**
+ * 占位符模块
+ * 用于替代缺失的图片资源
+ */
+
+// 使用 data URI 的方式提供一个简单的占位符图片
+const placeholderImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjVGNUY1Ii8+CjxwYXRoIGQ9Ik0zMCA3MEw1MCA0NUw3MCA3MEgzMFoiIGZpbGw9IiNDQ0NDQ0MiLz4KPGNpcmNsZSBjeD0iNDAiIGN5PSIzNSIgcj0iNSIgZmlsbD0iI0NDQ0NDQyIvPgo8L3N2Zz4K'
+
+module.exports = placeholderImage 

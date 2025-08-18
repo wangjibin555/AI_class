@@ -1,0 +1,43 @@
+{
+  "timestamp": "2025-08-08T13:06:18.046Z",
+  "summary": {
+    "total": 6,
+    "successful": 2,
+    "failed": 4,
+    "timeouts": 0,
+    "successRate": "33.3"
+  },
+  "config": {
+    "BASE_URL": "https://wangjibin-sc.wepie.com:9000",
+    "TIMEOUT_MS": 300000,
+    "POLL_INTERVAL_MS": 10000,
+    "MAX_POLL_ATTEMPTS": 30,
+    "MOCK_USER_CREDENTIALS": {
+      "code": "test_generation_1754658377749",
+      "userInfo": {
+        "nickName": "生成功能测试用户",
+        "avatarUrl": "https://example.com/avatar.png"
+      }
+    }
+  },
+  "testData": {
+    "testCourse": {
+      "title": "音频PPT生成测试课件",
+      "description": "这是一个用于测试音频和PPT生成功能的测试课件。包含多个幻灯片内容，用于验证TTS和AI生成功能。",
+      "content": "\n# 测试课件：AI技术概述\n\n## 第一章：人工智能简介\n人工智能（AI）是计算机科学的一个分支，致力于创建能够执行通常需要人类智能的任务的智能机器。\n\n## 第二章：机器学习基础\n机器学习是AI的一个子集，它使计算机能够在没有明确编程的情况下学习和改进。\n\n## 第三章：深度学习\n深度学习使用神经网络来模拟人脑的工作方式，用于图像识别、自然语言处理等领域。\n\n## 第四章：应用场景\nAI技术广泛应用于医疗诊断、自动驾驶、语音识别、推荐系统等各个领域。\n\n## 结论\n人工智能正在改变我们的世界，为未来带来无限可能。\n        ",
+      "category": "technology",
+      "voice_type": "zhixiaobai",
+      "is_public": false
+    },
+    "dashscopePPTTest": {
+      "content": "AI人工智能发展历程及未来趋势分析",
+      "slides_count": 8,
+      "style": "professional"
+    },
+    "urlAnalysisTest": {
+      "url": "https://zh.wikipedia.org/wiki/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD",
+      "title": "人工智能 - 维基百科"
+    }
+  },
+  "createdResources": []
+}

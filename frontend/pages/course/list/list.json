@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "我的课件",
+  "navigationBarBackgroundColor": "#4D7CFE",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F8F9FB",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "icon-component": "/components/Icon/index"
+  }
+} 

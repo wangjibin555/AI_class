@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>go语言</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-x: hidden;
+        }
+        
+        .presentation {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .slide {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin: 30px 0;
+            padding: 40px;
+            min-height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .slide-header {
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .slide-number {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .slide-title {
+            font-size: 2.5em;
+            color: #333;
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .slide.title-slide .slide-title {
+            font-size: 3.5em;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .slide-content {
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #555;
+        }
+        
+        .slide-content ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .slide-content li {
+            margin: 15px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .slide-content li:before {
+            content: '▶';
+            color: #667eea;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .keywords {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .keywords-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        
+        .keyword-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            margin: 3px;
+            font-size: 0.9em;
+        }
+        
+        .slide-notes {
+            background: #fff9c4;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+            font-style: italic;
+        }
+        
+        .metadata {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 0.9em;
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: #667eea;
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+        
+        @media print {
+            .slide {
+                page-break-after: always;
+                margin: 0;
+                box-shadow: none;
+            }
+            
+            body {
+                background: white;
+            }
+        }
+    </style>
+    <script>
+        function updateProgress() {
+            const slides = document.querySelectorAll('.slide');
+            const progressBar = document.querySelector('.progress-bar');
+            
+            window.addEventListener('scroll', () => {
+                const scrollTop = window.pageYOffset;
+                const docHeight = document.body.scrollHeight - window.innerHeight;
+                const progress = (scrollTop / docHeight) * 100;
+                progressBar.style.width = progress + '%';
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', updateProgress);
+    </script>
+</head>
+<body>
+    <div class="progress-bar"></div>
+    <div class="presentation">
+        
+        <div class="slide title-slide">
+            <div class="slide-header">
+                <div class="slide-number">第 1 页</div>
+                <h1 class="slide-title">Go语言基础概述</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <p>主题：Go语言基础概述
+生成时间：2025年07月22日</p>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">Go语言基础概述</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 欢迎大家，今天我们将学习关于Go语言基础概述的内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 2 页</div>
+                <h1 class="slide-title">Go语言运行方式</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>使用命令 &#39;go run .&#39; 运行当前目录下的Go程序。</li>
+                    
+                        <li>程序需要包含main包和main函数作为入口点。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">Go语言运行方式</span>
+                
+                    <span class="keyword-tag">使用命令</span>
+                
+                    <span class="keyword-tag">&#39;go</span>
+                
+                    <span class="keyword-tag">run</span>
+                
+                    <span class="keyword-tag">运行当前目录下的Go程序。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看Go语言运行方式的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 3 页</div>
+                <h1 class="slide-title">包（package）概念</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>同一个包内的文件必须声明相同的package名称。</li>
+                    
+                        <li>建议在整个项目中统一使用一个package名称。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">包（package）概念</span>
+                
+                    <span class="keyword-tag">同一个包内的文件必须声明相同的package名称。</span>
+                
+                    <span class="keyword-tag">建议在整个项目中统一使用一个package名称。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看包（package）概念的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 4 页</div>
+                <h1 class="slide-title">变量定义与赋值</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>Go语言支持类型推断，无需显式声明变量类型。</li>
+                    
+                        <li>未赋值的变量必须显式声明类型。</li>
+                    
+                        <li>使用 &#39;:=&#39; 进行简写声明，但仅限于函数内部。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">变量定义与赋值</span>
+                
+                    <span class="keyword-tag">Go语言支持类型推断，无需显式声明变量类型。</span>
+                
+                    <span class="keyword-tag">未赋值的变量必须显式声明类型。</span>
+                
+                    <span class="keyword-tag">使用</span>
+                
+                    <span class="keyword-tag">&#39;:=&#39;</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看变量定义与赋值的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 5 页</div>
+                <h1 class="slide-title">全局变量与作用域</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>在函数外部定义的全局变量必须使用 &#39;var&#39; 关键字。</li>
+                    
+                        <li>控制语句中初始化的变量具有块级作用域。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">全局变量与作用域</span>
+                
+                    <span class="keyword-tag">在函数外部定义的全局变量必须使用</span>
+                
+                    <span class="keyword-tag">&#39;var&#39;</span>
+                
+                    <span class="keyword-tag">关键字。</span>
+                
+                    <span class="keyword-tag">控制语句中初始化的变量具有块级作用域。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看全局变量与作用域的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 6 页</div>
+                <h1 class="slide-title">常见数据类型</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>整型（int）、浮点型（float）、复数（complex）、布尔型（bool）、字符串（string）。</li>
+                    
+                        <li>无符号整型（uint）用于表示非负数值。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">常见数据类型</span>
+                
+                    <span class="keyword-tag">整型（int）、浮点型（float）、复数（complex）、布尔型（bool）、字符串（string）。</span>
+                
+                    <span class="keyword-tag">无符号整型（uint）用于表示非负数值。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看常见数据类型的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 7 页</div>
+                <h1 class="slide-title">输出格式化</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>使用 &#39;fmt.Printf&#39; 进行格式化输出。</li>
+                    
+                        <li>占位符 &#39;%T&#39; 显示变量类型，&#39;%v&#39; 显示变量值。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">输出格式化</span>
+                
+                    <span class="keyword-tag">使用</span>
+                
+                    <span class="keyword-tag">&#39;fmt.Printf&#39;</span>
+                
+                    <span class="keyword-tag">进行格式化输出。</span>
+                
+                    <span class="keyword-tag">占位符</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看输出格式化的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 8 页</div>
+                <h1 class="slide-title">分支判断</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>Go语言的 if 条件语句不需要括号，但需要空格分隔。</li>
+                    
+                        <li>在条件语句中可以初始化变量，其作用域仅限于该块内。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">分支判断</span>
+                
+                    <span class="keyword-tag">Go语言的</span>
+                
+                    <span class="keyword-tag">条件语句不需要括号，但需要空格分隔。</span>
+                
+                    <span class="keyword-tag">在条件语句中可以初始化变量，其作用域仅限于该块内。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看分支判断的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 9 页</div>
+                <h1 class="slide-title">switch语句</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>Go语言的 switch 语法与Java和C&#43;&#43;类似。</li>
+                    
+                        <li>支持多个 case 分支匹配特定值或表达式。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">switch语句</span>
+                
+                    <span class="keyword-tag">Go语言的</span>
+                
+                    <span class="keyword-tag">switch</span>
+                
+                    <span class="keyword-tag">语法与Java和C&#43;&#43;类似。</span>
+                
+                    <span class="keyword-tag">支持多个</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看switch语句的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 10 页</div>
+                <h1 class="slide-title">总结</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <p>本课件介绍了Go语言的基础知识，包括运行方式、包管理、变量定义、数据类型、输出格式、分支判断、switch语句、循环结构以及引用类型变量等核心内容，适合初学者快速掌握Go语言的基本语法和编程思路。</p>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">总结</span>
+                
+                    <span class="keyword-tag">结论</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 让我们来总结今天学习的主要内容
+            </div>
+            
+        </div>
+        
+        
+        <div class="metadata">
+            <p>生成时间: 2025-07-22 10:49:47 | 模板: business | 总页数: 10</p>
+            <p>由 AI课堂 智能生成</p>
+        </div>
+    </div>
+</body>
+</html>

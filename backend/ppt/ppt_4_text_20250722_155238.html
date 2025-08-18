@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试URL生成PPT</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-x: hidden;
+        }
+        
+        .presentation {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .slide {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin: 30px 0;
+            padding: 40px;
+            min-height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .slide-header {
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .slide-number {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .slide-title {
+            font-size: 2.5em;
+            color: #333;
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .slide.title-slide .slide-title {
+            font-size: 3.5em;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .slide-content {
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #555;
+        }
+        
+        .slide-content ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .slide-content li {
+            margin: 15px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .slide-content li:before {
+            content: '▶';
+            color: #667eea;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .keywords {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .keywords-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        
+        .keyword-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            margin: 3px;
+            font-size: 0.9em;
+        }
+        
+        .slide-notes {
+            background: #fff9c4;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+            font-style: italic;
+        }
+        
+        .metadata {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 0.9em;
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: #667eea;
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+        
+        @media print {
+            .slide {
+                page-break-after: always;
+                margin: 0;
+                box-shadow: none;
+            }
+            
+            body {
+                background: white;
+            }
+        }
+    </style>
+    <script>
+        function updateProgress() {
+            const slides = document.querySelectorAll('.slide');
+            const progressBar = document.querySelector('.progress-bar');
+            
+            window.addEventListener('scroll', () => {
+                const scrollTop = window.pageYOffset;
+                const docHeight = document.body.scrollHeight - window.innerHeight;
+                const progress = (scrollTop / docHeight) * 100;
+                progressBar.style.width = progress + '%';
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', updateProgress);
+    </script>
+</head>
+<body>
+    <div class="progress-bar"></div>
+    <div class="presentation">
+        
+        <div class="slide title-slide">
+            <div class="slide-header">
+                <div class="slide-number">第 1 页</div>
+                <h1 class="slide-title">课程内容总结与PPT结构设计</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <p>主题：课程内容总结与PPT结构设计
+生成时间：2025年07月22日</p>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">课程内容总结与PPT结构设计</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 欢迎大家，今天我们将学习关于课程内容总结与PPT结构设计的内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 2 页</div>
+                <h1 class="slide-title">主要主题与核心观点</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>测试文档用于验证课程ID生成功能的正确性。</li>
+                    
+                        <li>内容包含技术概念、实践案例和学习要点。</li>
+                    
+                        <li>目标是确保课程ID能够正确递增，而非使用固定模拟值。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">主要主题与核心观点</span>
+                
+                    <span class="keyword-tag">测试文档用于验证课程ID生成功能的正确性。</span>
+                
+                    <span class="keyword-tag">内容包含技术概念、实践案例和学习要点。</span>
+                
+                    <span class="keyword-tag">目标是确保课程ID能够正确递增，而非使用固定模拟值。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看主要主题与核心观点的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 3 页</div>
+                <h1 class="slide-title">内容分解与结构规划</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>第一部分：介绍测试文档的目的与功能。</li>
+                    
+                        <li>第二部分：分析文档中包含的技术概念与学习要点。</li>
+                    
+                        <li>第三部分：讨论课程ID生成机制及其验证方法。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">内容分解与结构规划</span>
+                
+                    <span class="keyword-tag">第一部分：介绍测试文档的目的与功能。</span>
+                
+                    <span class="keyword-tag">第二部分：分析文档中包含的技术概念与学习要点。</span>
+                
+                    <span class="keyword-tag">第三部分：讨论课程ID生成机制及其验证方法。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看内容分解与结构规划的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 4 页</div>
+                <h1 class="slide-title">PPT演示逻辑设计</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>清晰展示测试文档的作用与重要性。</li>
+                    
+                        <li>强调技术内容与实际应用的结合。</li>
+                    
+                        <li>突出课程ID生成机制的设计与验证过程。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">PPT演示逻辑设计</span>
+                
+                    <span class="keyword-tag">清晰展示测试文档的作用与重要性。</span>
+                
+                    <span class="keyword-tag">强调技术内容与实际应用的结合。</span>
+                
+                    <span class="keyword-tag">突出课程ID生成机制的设计与验证过程。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看PPT演示逻辑设计的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 5 页</div>
+                <h1 class="slide-title">总结</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <p>本PPT旨在通过结构化方式呈现测试文档的核心内容，重点说明其在课程ID生成验证中的作用，并提供清晰的逻辑框架以支持专业且易懂的演示。</p>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">总结</span>
+                
+                    <span class="keyword-tag">结论</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 让我们来总结今天学习的主要内容
+            </div>
+            
+        </div>
+        
+        
+        <div class="metadata">
+            <p>生成时间: 2025-07-22 15:52:38 | 模板: business | 总页数: 5</p>
+            <p>由 AI课堂 智能生成</p>
+        </div>
+    </div>
+</body>
+</html>

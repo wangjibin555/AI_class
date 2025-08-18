@@ -1,0 +1,27 @@
+# 二进制文件
+web-scraper-ppt
+*.exe
+
+# 输出目录
+output/
+
+# 配置文件（包含敏感信息）
+config.json
+
+# Go相关
+*.test
+*.out
+go.work
+
+# IDE相关
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志文件
+*.log 

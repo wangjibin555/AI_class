@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "PPT预览",
+  "navigationStyle": "custom",
+  "backgroundColor": "#000000",
+  "backgroundTextStyle": "light",
+  "enablePullDownRefresh": false,
+  "onReachBottomDistance": 50,
+  "usingComponents": {}
+}

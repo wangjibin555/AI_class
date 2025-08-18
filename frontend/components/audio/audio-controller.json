@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "audio-progress": "./audio-progress"
+  }
+} 

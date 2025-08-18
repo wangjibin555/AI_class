@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PPT演示文稿</title>
+    
+    <!-- League Spartan字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/white.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "League Spartan", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .reveal {
+            background: transparent;
+        }
+        
+        .reveal .slides {
+            background: transparent;
+        }
+        
+        .reveal .slides section {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(25, 118, 210, 0.15);
+            margin: 20px;
+            border: 1px solid rgba(25, 118, 210, 0.1);
+        }
+        
+        .reveal .slides section h1 {
+            font-size: 38px;
+            font-weight: 700;
+            color: #1976d2;
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+        
+        .reveal .slides section h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 25px;
+            letter-spacing: 0.3px;
+            line-height: 1.3;
+        }
+        
+        .reveal .slides section p, 
+        .reveal .slides section div,
+        .reveal .slides section li {
+            font-size: 20px;
+            font-weight: 400;
+            color: #424242;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            letter-spacing: 0.2px;
+        }
+        
+        .reveal .slides section ul, 
+        .reveal .slides section ol {
+            text-align: left;
+            margin: 0 auto;
+            max-width: 80%;
+        }
+        
+        .reveal .slides section img {
+            border: none;
+            box-shadow: 0 4px 20px rgba(25, 118, 210, 0.2);
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 70vh;
+            object-fit: contain;
+            margin: 20px 0;
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            .reveal .slides section {
+                padding: 30px 20px;
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .reveal .slides section h1 {
+                font-size: 28px;
+            }
+            
+            .reveal .slides section h2 {
+                font-size: 22px;
+            }
+            
+            .reveal .slides section p,
+            .reveal .slides section div,
+            .reveal .slides section li {
+                font-size: 18px;
+            }
+        }
+        
+        .custom-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 1000;
+            display: flex;
+            gap: 12px;
+            flex-direction: column;
+        }
+        
+        .custom-controls button {
+            background: linear-gradient(135deg, #1976d2, #1565c0);
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 48px;
+            height: 48px;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .custom-controls button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .custom-controls {
+                bottom: 20px;
+                left: 20px;
+                gap: 10px;
+            }
+            
+            .custom-controls button {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+        
+        /* 进度条和控制按钮样式 */
+        .reveal .progress {
+            background: rgba(25, 118, 210, 0.2);
+        }
+        
+        .reveal .progress span {
+            background: #1976d2;
+        }
+        
+        .reveal .controls {
+            color: #1976d2;
+        }
+        
+        .reveal .controls button {
+            background: rgba(25, 118, 210, 0.1);
+        }
+        
+        /* 触摸手势优化 */
+        .reveal .slides {
+            touch-action: pan-y;
+        }
+        
+        /* 动画效果 */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .reveal .slides section {
+            animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section id="slide-1">
+                <div><h2>微信开发全览</h2></div>
+            </section>
+            <section id="slide-2">
+                <div><h2>封面</h2></div>
+                <div><div class='content-list'><p>• 设计理念：突出“微信生态开发相关主题汇报”，融入微信标志性元素，展现核心内容。</p></div></div>
+            </section>
+            <section id="slide-3">
+                <div><h2>目录页</h2></div>
+                <div><div class='content-list'><p>• 微信生态全景介绍：概述微信生态各类产品及其相互关系，说明其在互联网生态中的地位与影响。</p><p>• 公众号开发详解：解析公众号定义、分类、注册流程，介绍两种开发场景要点。</p><p>• 小程序与小游戏特色：阐述小程序便捷性等特点及应用场景，分析小游戏案例、开发特点等。</p><p>• 微信支付及相关服务：讲解微信支付功能优势，介绍电商服务及行业应用案例。</p><p>• 视频号与社区等功能：解读视频号定位等，分析社区作用，提及其他功能板块支持。</p><p>• 开发指南核心要点：介绍服务端 API 调用、消息与事件推送及其他开发要点。</p><p>• 总结与展望：总结微信生态产品特点和开发要点，展望未来趋势并鼓励参与。</p><p>• 致谢页：添加“感谢聆听”表达感谢。</p></div></div>
+            </section>
+            <section id="slide-4">
+                <div><h2>微信生态全景介绍</h2></div>
+                <div><div class='content-list'><p>• 微信生态产品展示：列举公众号、小程序等各类产品，说明其相互关联与协作。</p><p>• 互联网生态地位：阐述微信生态在互联网中的重要位置及广泛影响力。</p><p>• 对生活和企业的影响：举例说明微信如何改变用户生活，助力企业运营发展。</p></div></div>
+            </section>
+            <section id="slide-5">
+                <div><h2>公众号开发详解</h2></div>
+                <div><div class='content-list'><p>• 公众号定义与分类：介绍原订阅号、服务号定义，说明两者区别与适用场景。</p><p>• 注册申请流程：讲解在微信公众平台注册公众号的具体步骤与注意事项。</p><p>• 开发场景：说明服务端 API 调用实现的功能及核心要点，介绍网页应用开发方式与作用。</p></div></div>
+            </section>
+            <section id="slide-6">
+                <div><h2>小程序与小游戏特色</h2></div>
+                <div><div class='content-list'><p>• 小程序特点与应用：阐述小程序便捷、功能多样特点，列举常见应用场景。</p><p>• 小游戏案例分析：展示热门小游戏案例，剖析开发特点与吸引用户的因素。</p><p>• 独特价值与趋势：说明小程序与小游戏在微信生态中的独特价值和未来走向。</p></div></div>
+            </section>
+            <section id="slide-7">
+                <div><h2>微信支付及相关服务</h2></div>
+                <div><div class='content-list'><p>• 微信支付功能优势：讲解微信支付便捷、安全等特点，介绍支付流程。</p><p>• 电商服务运营：介绍微信小店等电商服务模式，分析盈利方式与运营要点。</p><p>• 行业应用案例：分享微信支付在不同行业应用，说明对商业发展的推动作用。</p></div></div>
+            </section>
+            <section id="slide-8">
+                <div><h2>视频号与社区等功能</h2></div>
+                <div><div class='content-list'><p>• 视频号解读：说明视频号功能定位、内容形式，分析当前发展现状。</p><p>• 社区作用：阐述社区在用户互动、问题交流等方面对微信生态的意义。</p><p>• 其他功能支持：介绍学堂等功能板块为用户和开发者提供的服务与帮助。</p></div></div>
+            </section>
+            <section id="slide-9">
+                <div><h2>开发指南核心要点</h2></div>
+                <div><div class='content-list'><p>• 服务端 API 调用：详细介绍接口调用概述、限制说明及报警排查指引。</p><p>• 消息与事件推送：讲解消息加解密方法，说明普通消息、事件推送处理方式。</p><p>• 其他开发要点：介绍自定义菜单等功能开发注意事项与关键要点。</p></div></div>
+            </section>
+            <section id="slide-10">
+                <div><h2>总结与展望</h2></div>
+                <div><div class='content-list'><p>• 产品特点与开发要点总结：概括微信生态各产品特点及开发核心要点。</p><p>• 未来趋势展望：预测微信生态未来可能的发展方向与潜在机遇。</p><p>• 鼓励开发者参与：呼吁开发者积极投身微信生态开发，共同推动其进步。</p></div></div>
+            </section>
+            <section id="slide-11">
+                <div><h2>致谢页</h2></div>
+                <div><div class='content-list'><p>• 表达感谢：添加“感谢聆听”字样，向观众表示诚挚感谢。</p></div></div>
+            </section>
+        </div>
+    </div>
+    
+    <div class="custom-controls">
+        <button onclick="previewPresentation()" title="预览">👁️</button>
+        <button onclick="copyPresentationLink()" title="复制链接">🔗</button>
+        <button onclick="Reveal.toggleFullscreen()" title="全屏">🔍</button>
+        <button onclick="sharePresentation()" title="分享">📤</button>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            transition: 'slide',
+            transitionSpeed: 'fast',
+            controls: true,
+            progress: true,
+            center: true,
+            touch: true,
+            keyboard: true,
+            mouseWheel: true,
+            // 移动端优化配置
+            embedded: false,
+            autoSlide: 0,
+            autoSlideStoppable: true,
+            // 手势配置
+            touchSensitivity: 15,
+            // 视差背景
+            parallaxBackgroundImage: '',
+            parallaxBackgroundSize: '',
+            // 响应式字体
+            width: '100%%',
+            height: '100%%',
+            margin: 0.04,
+            minScale: 0.2,
+            maxScale: 2.0,
+            // 插件
+            plugins: []
+        });
+        
+        // 移动端手势增强
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        });
+        
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleGesture();
+        });
+        
+        function handleGesture() {
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            const minSwipeDistance = 50;
+            
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                // 水平滑动
+                if (Math.abs(deltaX) > minSwipeDistance) {
+                    if (deltaX > 0) {
+                        Reveal.prev(); // 右滑：上一页
+                    } else {
+                        Reveal.next(); // 左滑：下一页
+                    }
+                }
+            } else {
+                // 垂直滑动
+                if (Math.abs(deltaY) > minSwipeDistance) {
+                    if (deltaY > 0) {
+                        Reveal.up(); // 下滑：向上
+                    } else {
+                        Reveal.down(); // 上滑：向下
+                    }
+                }
+            }
+        }
+        
+        // 双击全屏
+        let lastTap = 0;
+        document.addEventListener('touchend', function(e) {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            if (tapLength < 500 && tapLength > 0) {
+                if (Reveal.isFullscreen()) {
+                    Reveal.toggleFullscreen();
+                } else {
+                    Reveal.toggleFullscreen();
+                }
+            }
+            lastTap = currentTime;
+        });
+        
+        // 预览功能
+        function previewPresentation() {
+            const currentSlide = Reveal.getCurrentSlide();
+            const slideIndex = Reveal.getIndices().h + 1;
+            const totalSlides = Reveal.getTotalSlides();
+            
+            showToast('预览第 ' + slideIndex + ' 页，共 ' + totalSlides + ' 页');
+            
+            // 可以在这里添加预览相关的逻辑
+            // 比如显示幻灯片缩略图或预览窗口
+        }
+        
+        // 复制链接功能
+        function copyPresentationLink() {
+            const url = window.location.href;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('演示链接已复制到剪贴板');
+                }).catch(err => {
+                    console.log('复制失败:', err);
+                    fallbackCopyTextToClipboard(url);
+                });
+            } else {
+                fallbackCopyTextToClipboard(url);
+            }
+        }
+        
+        // 备用复制方法
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast('演示链接已复制到剪贴板');
+                } else {
+                    showToast('复制失败，请手动复制链接');
+                }
+            } catch (err) {
+                console.log('复制失败:', err);
+                showToast('复制失败，请手动复制链接');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        // 分享功能增强
+        function sharePresentation() {
+            const title = document.title || 'PPT演示文稿';
+            const url = window.location.href;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    url: url,
+                    text: '查看这个精彩的PPT演示'
+                }).catch(err => console.log('分享失败:', err));
+            } else {
+                copyPresentationLink();
+            }
+        }
+        
+        // 简单的Toast提示
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.position = 'fixed';
+            toast.style.top = '50%%';
+            toast.style.left = '50%%';
+            toast.style.transform = 'translate(-50%%, -50%%)';
+            toast.style.background = 'rgba(25, 118, 210, 0.9)';
+            toast.style.color = 'white';
+            toast.style.padding = '12px 24px';
+            toast.style.borderRadius = '8px';
+            toast.style.fontSize = '16px';
+            toast.style.zIndex = '10000';
+            toast.style.backdropFilter = 'blur(10px)';
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+        
+        // 自适应字体大小
+        function adjustFontSize() {
+            const sections = document.querySelectorAll('.reveal .slides section');
+            const viewportWidth = window.innerWidth;
+            
+            sections.forEach(section => {
+                if (viewportWidth < 768) {
+                    section.style.fontSize = '0.8em';
+                } else if (viewportWidth < 1024) {
+                    section.style.fontSize = '0.9em';
+                } else {
+                    section.style.fontSize = '1em';
+                }
+            });
+        }
+        
+        // 窗口大小改变时调整字体
+        window.addEventListener('resize', adjustFontSize);
+        window.addEventListener('orientationchange', adjustFontSize);
+        
+        // 初始化时调整字体
+        document.addEventListener('DOMContentLoaded', adjustFontSize);
+    </script>
+</body>
+</html>

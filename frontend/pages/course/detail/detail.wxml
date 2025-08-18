@@ -1,0 +1,376 @@
+<!--pages/course/detail/detail.wxml-->
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{isLoading}}">
+    <view class="loading-icon">⏳</view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 课程信息与详细信息合并 -->
+  <view class="course-info-container" wx:if="{{courseInfo}}">
+    <!-- 课程头部（大卡片：标题/来源/插画/主按钮） -->
+    <view class="course-header">
+      <!-- 标题与来源链接 -->
+      <text class="hero-title">{{courseInfo.title}}</text>
+      <view class="hero-source" wx:if="{{courseInfo.source_url}}">
+        <text class="hero-source-prefix">基于</text>
+        <text class="hero-source-url">{{courseInfo.source_url}}</text>
+      </view>
+
+      <view class="course-thumbnail">
+        <image 
+          class="thumbnail-image" 
+          src="{{courseInfo.thumbnail_url || '/images/placeholder.png'}}"
+          mode="aspectFill"
+        />
+        <view class="course-status status-{{courseInfo.status}}">
+          {{getStatusText(courseInfo.status)}}
+        </view>
+      </view>
+      
+      <!-- 大主按钮（与头图同卡片） -->
+      <button 
+        class="primary-btn hero-cta-btn"
+        bindtap="startCourse"
+        disabled="{{courseInfo.status !== 'completed'}}"
+      >
+        <text class="primary-btn-icon">🎯</text>
+        <text class="primary-btn-text">{{learningProgress > 0 ? '继续学习' : '开始学习'}}</text>
+      </button>
+      
+      <view class="course-basic-info">
+        <text class="course-description" wx:if="{{courseInfo.description && !courseInfo.source_url}}">{{courseInfo.description}}</text>
+        
+        <view class="course-meta">
+          <view class="meta-item">
+            <text class="meta-value">{{courseInfo.slides_count || 0}}</text>
+            <text class="meta-label">页</text>
+          </view>
+          <view class="meta-item">
+            <text class="meta-value">{{courseInfo.view_count || 0}}</text>
+            <text class="meta-label">次观看</text>
+          </view>
+          <view class="meta-item">
+            <text class="meta-value">{{courseInfo.like_count || 0}}</text>
+            <text class="meta-label">点赞</text>
+          </view>
+        </view>
+        
+        <view class="course-tags" wx:if="{{courseInfo.tags && courseInfo.tags.length > 0}}">
+          <text 
+            class="tag"
+            wx:for="{{courseInfo.tags}}"
+            wx:for-item="tag"
+            wx:key="*this"
+          >
+            {{tag}}
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 学习进度 -->
+    <view class="learning-progress" wx:if="{{learningProgress > 0}}">
+      <text class="progress-label">学习进度</text>
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{learningProgress}}%"></view>
+      </view>
+      <text class="progress-text">{{learningProgress.toFixed(1)}}%</text>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="course-actions">
+      <view class="action-buttons">
+        <button 
+          class="action-btn bookmark-btn {{isBookmarked ? 'active' : ''}} {{bookmarking ? 'loading' : ''}}"
+          bindtap="toggleBookmark"
+          disabled="{{bookmarking}}"
+        >
+          <text class="action-icon">{{isBookmarked ? '⭐' : '☆'}}</text>
+          <text class="action-text">收藏</text>
+        </button>
+        
+        <button 
+          class="action-btn share-btn"
+          bindtap="shareCourse"
+        >
+          <text class="action-icon">📤</text>
+          <text class="action-text">分享</text>
+        </button>
+        
+        <button 
+          class="action-btn edit-btn"
+          bindtap="editCourse"
+          wx:if="{{isOwner}}"
+        >
+          <text class="action-icon">✏️</text>
+          <text class="action-text">编辑</text>
+        </button>
+      </view>
+    </view>
+
+    <!-- 分隔线 -->
+    <view class="section-divider"></view>
+
+    <!-- 课程详细信息 -->
+    <view class="course-info-section">
+      <view class="section-header">
+        <text class="section-title">📋 课程信息</text>
+      </view>
+      
+      <!-- 统一信息网格 -->
+      <view class="unified-info-grid">
+        <!-- 分类 -->
+        <view class="info-card category-card">
+          <view class="card-icon category-icon">
+            <text class="icon-text">🏷️</text>
+          </view>
+          <view class="card-content">
+            <text class="card-label">分类</text>
+            <text class="card-value">{{courseInfo.category}}</text>
+          </view>
+        </view>
+        
+        <!-- 语音类型 -->
+        <view class="info-card voice-card">
+          <view class="card-icon voice-icon">
+            <text class="icon-text">🎤</text>
+          </view>
+          <view class="card-content">
+            <text class="card-label">语音类型</text>
+            <text class="card-value">{{courseInfo.voice_type}}</text>
+          </view>
+        </view>
+        
+        <!-- 公开状态 -->
+        <view class="info-card">
+          <view class="card-icon default-icon">
+            <text class="icon-text">🌐</text>
+          </view>
+          <view class="card-content">
+            <text class="card-label">公开状态</text>
+            <text class="card-value {{courseInfo.is_public ? 'public' : 'private'}}">
+              {{courseInfo.is_public ? '公开' : '私有'}}
+            </text>
+          </view>
+        </view>
+        
+        <!-- 幻灯片数 -->
+        <view class="info-card">
+          <view class="card-icon default-icon">
+            <text class="icon-text">📊</text>
+          </view>
+          <view class="card-content">
+            <text class="card-label">幻灯片数</text>
+            <text class="card-value">{{courseInfo.slides_count || 0}} 页</text>
+          </view>
+        </view>
+        
+        <!-- 总时长 -->
+        <view class="info-card" wx:if="{{courseInfo.duration}}">
+          <view class="card-icon default-icon">
+            <text class="icon-text">⏱️</text>
+          </view>
+          <view class="card-content">
+            <text class="card-label">总时长</text>
+            <text class="card-value">{{formatDuration(courseInfo.duration || 0)}}</text>
+          </view>
+        </view>
+        
+        <!-- 观看次数 -->
+        <view class="info-card">
+          <view class="card-icon default-icon">
+            <text class="icon-text">👁️</text>
+          </view>
+          <view class="card-content">
+            <text class="card-label">观看次数</text>
+            <text class="card-value">{{courseInfo.view_count || 0}} 次</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="course-timeline">
+        <view class="timeline-item">
+          <view class="timeline-icon">📅</view>
+          <view class="timeline-content">
+            <text class="timeline-label">创建时间</text>
+            <text class="timeline-value">{{formatTime(courseInfo.created_at) || '未知时间'}}</text>
+          </view>
+        </view>
+        
+        <view class="timeline-item" wx:if="{{courseInfo.updated_at && courseInfo.updated_at !== courseInfo.created_at}}">
+          <view class="timeline-icon">🔄</view>
+          <view class="timeline-content">
+            <text class="timeline-label">更新时间</text>
+            <text class="timeline-value">{{formatTime(courseInfo.updated_at) || '未知时间'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 - 当课程信息为空时显示 -->
+  <view class="empty-state" wx:if="{{!isLoading && !courseInfo}}">
+    <view class="empty-icon">📚</view>
+    <text class="empty-title">课程不存在</text>
+    <text class="empty-description">
+      抱歉，您访问的课程不存在或已被删除
+    </text>
+    <view class="empty-actions">
+      <button class="empty-btn primary" bindtap="goBack">
+        返回上一页
+      </button>
+      <button class="empty-btn secondary" bindtap="goHome">
+        回到首页
+      </button>
+    </view>
+  </view>
+
+  <!-- 课程内容 -->
+  <view class="course-content" wx:if="{{courseInfo}}">
+    <!-- PPT展示区域 -->
+    <view class="ppt-viewer-section" wx:if="{{courseInfo.ppt_file_path}}">
+      <view class="section-header">
+        <text class="section-title">📺 PPT演示</text>
+      </view>
+      
+      <view class="ppt-preview">
+        <view class="ppt-info">
+          <text class="ppt-filename">{{courseInfo.ppt_file_path}}</text>
+          <text class="ppt-description">使用下方按钮预览或下载完整PPT</text>
+        </view>
+      </view>
+    
+      <!-- PPT操作按钮 -->
+      <view class="ppt-action-buttons">
+        <button class="ppt-action-btn preview-btn" bindtap="previewPPTDirect">
+          📺 预览PPT
+        </button>
+        <button class="ppt-action-btn download-btn" bindtap="downloadPPTDirect">
+          💾 下载PPT
+        </button>
+      </view>
+    </view>
+    
+   
+
+
+
+
+  </view>
+
+  <!-- 音频播放器 -->
+  <audio 
+    id="courseAudio"
+    class="audio-player"
+    controls
+    hidden="{{!isAudioPlaying}}"
+  ></audio>
+
+  <!-- 分享对话框 -->
+  <view class="share-dialog {{showShareDialog ? 'show' : ''}}" wx:if="{{showShareDialog}}">
+    <view class="dialog-mask" bindtap="closeShareDialog"></view>
+    <view class="dialog-content">
+      <view class="dialog-header">
+        <text class="dialog-title">分享课程</text>
+        <button class="dialog-close" bindtap="closeShareDialog">✕</button>
+      </view>
+      
+      <view class="share-options">
+        <button class="share-option" open-type="share">
+          <text class="share-icon">💬</text>
+          <text class="share-text">分享给朋友</text>
+        </button>
+        
+        <button class="share-option" bindtap="generateShareLink">
+          <text class="share-icon">🔗</text>
+          <text class="share-text">生成链接</text>
+        </button>
+        
+        <button class="share-option" bindtap="generateQRCode">
+          <text class="share-icon">📱</text>
+          <text class="share-text">生成二维码</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-actions" wx:if="{{isOwner}}">
+    <button 
+      class="bottom-btn {{quiz && quiz.status === 'generating' ? 'generating-btn' : (hasExistingQuiz ? 'view-exercise-btn' : 'generate-exercise-btn')}}" 
+      bindtap="{{quiz && quiz.status === 'generating' ? 'startQuiz' : 'generateExercise'}}"
+      disabled="{{quiz && quiz.status === 'generating'}}"
+    >
+      <text class="btn-icon">{{quiz && quiz.status === 'generating' ? '⏳' : (hasExistingQuiz ? '👀' : '🧠')}}</text>
+      <text class="btn-text">{{quiz && quiz.status === 'generating' ? '生成中...' : (hasExistingQuiz ? '查看练习' : '生成练习')}}</text>
+    </button>
+    
+    <button class="bottom-btn delete-btn" bindtap="deleteCourse">
+      <text class="btn-icon">🗑️</text>
+      <text class="btn-text">删除</text>
+    </button>
+  </view>
+
+  <!-- 生成练习确认弹窗 -->
+  <view class="exercise-modal {{showExerciseModal ? 'show' : ''}}" wx:if="{{showExerciseModal}}">
+    <view class="modal-mask" bindtap="cancelGenerateExercise"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">生成练习</text>
+        <button class="modal-close" bindtap="cancelGenerateExercise">✕</button>
+      </view>
+      
+      <view class="modal-body">
+        <text class="modal-description">
+          将基于当前课程内容自动生成练习题，确定要继续吗？
+        </text>
+        
+        <view class="exercise-options">
+          <view class="option-row">
+            <text class="option-label">难度等级：</text>
+            <view class="option-selector">
+              <button 
+                class="option-btn {{exerciseOptions.difficulty === 'easy' ? 'active' : ''}}"
+                bindtap="selectDifficulty"
+                data-difficulty="easy"
+              >
+                简单
+              </button>
+              <button 
+                class="option-btn {{exerciseOptions.difficulty === 'normal' ? 'active' : ''}}"
+                bindtap="selectDifficulty"
+                data-difficulty="normal"
+              >
+                普通
+              </button>
+              <button 
+                class="option-btn {{exerciseOptions.difficulty === 'hard' ? 'active' : ''}}"
+                bindtap="selectDifficulty"
+                data-difficulty="hard"
+              >
+                困难
+              </button>
+            </view>
+          </view>
+          
+          <view class="option-row">
+            <text class="option-label">题目数量：</text>
+            <view class="option-input">
+              <button class="count-btn" bindtap="changeQuestionCount" data-action="decrease">-</button>
+              <text class="count-text">{{exerciseOptions.questionCount}}</text>
+              <button class="count-btn" bindtap="changeQuestionCount" data-action="increase">+</button>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="modal-btn cancel-btn" bindtap="cancelGenerateExercise">取消</button>
+        <button class="modal-btn confirm-btn" bindtap="confirmGenerateExercise" disabled="{{generating}}">
+          {{generating ? '生成中...' : '确定'}}
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,266 @@
+<!--pages/profile/profile.wxml-->
+<wxs module="utils">
+  // 格式化学习时长
+  function formatStudyTime(seconds) {
+    if (!seconds || seconds === 0) return '0分钟'
+    
+    var hours = Math.floor(seconds / 3600)
+    var minutes = Math.floor((seconds % 3600) / 60)
+    
+    if (hours > 0) {
+      return hours + '小时' + minutes + '分钟'
+    } else {
+      return minutes + '分钟'
+    }
+  }
+
+  // 获取VIP等级名称
+  function getVipLevelName(vipLevel) {
+    switch (vipLevel) {
+      case 1:
+        return '月度会员'
+      case 2:
+        return '年度会员'
+      default:
+        return '普通用户'
+    }
+  }
+
+  // 格式化日期
+  function formatDate(dateString) {
+    if (!dateString) return ''
+    var date = getDate(dateString)
+    var year = date.getFullYear()
+    var month = date.getMonth() + 1
+    var day = date.getDate()
+    return year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day)
+  }
+
+  module.exports = {
+    formatStudyTime: formatStudyTime,
+    getVipLevelName: getVipLevelName,
+    formatDate: formatDate
+  }
+</wxs>
+
+<view class="profile-container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
+    <view class="user-header">
+      <view class="avatar-container">
+        <image 
+          class="avatar" 
+          src="{{userInfo.avatar_url || '/images/default-avatar.svg'}}" 
+          mode="aspectFill"
+          bindtap="changeAvatar"
+        />
+        <view class="vip-indicator" wx:if="{{userInfo.vip_level > 0}}">
+          <text class="vip-crown">👑</text>
+        </view>
+      </view>
+      <view class="user-info">
+        <text class="nickname">{{userInfo.nickname || '微信用户'}}</text>
+        <view class="vip-section">
+                  <text class="vip-badge {{userInfo.vip_level > 0 ? 'vip' : 'normal'}}">
+          {{utils.getVipLevelName(userInfo.vip_level)}}
+        </text>
+        <text class="vip-expiry" wx:if="{{userInfo.vip_level > 0 && userInfo.vip_expired_at}}">
+          到期：{{utils.formatDate(userInfo.vip_expired_at)}}
+        </text>
+        </view>
+      </view>
+      <button class="edit-btn" bindtap="editProfile">
+        <text class="edit-icon">✏️</text>
+      </button>
+    </view>
+    
+    <!-- 积分信息 -->
+    <view class="credits-section">
+      <view class="credits-item">
+        <text class="credits-number">{{userInfo.credits || 0}}</text>
+        <text class="credits-label">可用积分</text>
+      </view>
+      <view class="credits-divider"></view>
+      <view class="credits-item">
+        <text class="credits-number">{{userStats.total_courses_created || 0}}</text>
+        <text class="credits-label">已创建课程</text>
+      </view>
+      <button class="credits-btn" bindtap="showCreditsInfo">
+        <text class="info-icon">ℹ️</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 统计信息 -->
+  <view class="stats-section" wx:if="{{userStats}}">
+    <view class="stats-title">学习统计</view>
+    <view class="stats-row">
+      <view class="stat-item">
+        <text class="stat-number">{{userStats.courses_created || 0}}</text>
+        <text class="stat-label">创建课程</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-number">{{userStats.courses_completed || 0}}</text>
+        <text class="stat-label">已完成</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-number">{{utils.formatStudyTime(userStats.total_study_time)}}</text>
+        <text class="stat-label">学习时长</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-number">{{userStats.quiz_total_attempts || 0}}</text>
+        <text class="stat-label">练习次数</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view class="menu-group">
+      <text class="group-title">学习管理</text>
+      <view class="menu-item" bindtap="goToMyCourses">
+        <text class="menu-icon">📚</text>
+        <text class="menu-text">我的课件</text>
+        <text class="menu-badge" wx:if="{{userStats.courses_created > 0}}">{{userStats.courses_created}}</text>
+        <text class="arrow-icon">→</text>
+      </view>
+      <view class="menu-item" bindtap="goToLearningHistory">
+        <text class="menu-icon">📈</text>
+        <text class="menu-text">学习记录</text>
+        <text class="arrow-icon">→</text>
+      </view>
+      <view class="menu-item" bindtap="goToFavorites">
+        <text class="menu-icon">❤️</text>
+        <text class="menu-text">我的收藏</text>
+        <text class="menu-badge" wx:if="{{userStats.bookmarks_count > 0}}">{{userStats.bookmarks_count}}</text>
+        <text class="arrow-icon">→</text>
+      </view>
+    </view>
+
+    <view class="menu-group">
+      <text class="group-title">会员服务</text>
+      <view class="menu-item" bindtap="goToVIP">
+        <text class="menu-icon">👑</text>
+        <text class="menu-text">会员中心</text>
+        <text class="menu-badge vip-badge" wx:if="{{userInfo.vip_level === 0}}">开通</text>
+        <text class="menu-badge vip-active" wx:if="{{userInfo.vip_level > 0}}">{{utils.getVipLevelName(userInfo.vip_level)}}</text>
+        <text class="arrow-icon">→</text>
+      </view>
+      <view class="menu-item" bindtap="buyCredits">
+        <text class="menu-icon">💰</text>
+        <text class="menu-text">购买积分</text>
+        <text class="arrow-icon">→</text>
+      </view>
+    </view>
+
+    <view class="menu-group">
+      <text class="group-title">设置与帮助</text>
+      <view class="menu-item" bindtap="goToSettings">
+        <text class="menu-icon">⚙️</text>
+        <text class="menu-text">设置</text>
+        <text class="arrow-icon">→</text>
+      </view>
+      <view class="menu-item" bindtap="goToHelp">
+        <text class="menu-icon">❓</text>
+        <text class="menu-text">帮助与反馈</text>
+        <text class="arrow-icon">→</text>
+      </view>
+      <view class="menu-item" bindtap="aboutApp">
+        <text class="menu-icon">ℹ️</text>
+        <text class="menu-text">关于我们</text>
+        <text class="arrow-icon">→</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout-section">
+    <button class="logout-btn" bindtap="logout">退出登录</button>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-mask" wx:if="{{isLoading}}">
+    <view class="loading-content">
+      <text class="loading-icon">⏳</text>
+      <text class="loading-text">{{loadingText}}</text>
+    </view>
+  </view>
+</view>
+
+<!-- 积分说明弹窗 -->
+<view class="modal" wx:if="{{showCreditsModal}}" bindtap="hideCreditsModal">
+  <view class="modal-content" catchtap="preventClose">
+    <view class="modal-header">
+      <text class="modal-title">积分说明</text>
+      <button class="modal-close" bindtap="hideCreditsModal">×</button>
+    </view>
+    <scroll-view class="modal-body" scroll-y>
+      <text class="credits-explain">
+        积分是AI课堂的虚拟货币，用于：
+        
+        • 生成AI课件（消耗1积分）
+        • 语音合成服务（消耗1积分/分钟）
+        • 智能练习生成（消耗1积分）
+        • 高级功能使用
+        
+        获取积分的方式：
+        • 注册送10积分
+        • 每日签到送1积分
+        • 邀请好友送5积分
+        • 购买积分包
+        • 升级VIP享受更多积分
+      </text>
+    </scroll-view>
+    <view class="modal-footer">
+      <button class="modal-btn primary" bindtap="buyCredits">购买积分</button>
+      <button class="modal-btn" bindtap="hideCreditsModal">知道了</button>
+    </view>
+  </view>
+</view>
+
+<!-- 编辑资料弹窗 -->
+<view class="modal" wx:if="{{showEditModal}}" bindtap="hideEditModal">
+  <view class="modal-content" catchtap="preventClose">
+    <view class="modal-header">
+      <text class="modal-title">编辑资料</text>
+      <button class="modal-close" bindtap="hideEditModal">×</button>
+    </view>
+    <view class="modal-body">
+      <view class="form-item">
+        <text class="form-label">昵称</text>
+        <input 
+          class="form-input" 
+          value="{{editForm.nickname}}" 
+          placeholder="请输入昵称"
+          bindinput="onNicknameInput"
+          maxlength="20"
+        />
+      </view>
+      <view class="form-item">
+        <text class="form-label">手机号</text>
+        <input 
+          class="form-input" 
+          value="{{editForm.phone}}" 
+          placeholder="请输入手机号"
+          bindinput="onPhoneInput"
+          type="number"
+          maxlength="11"
+        />
+      </view>
+      <view class="form-item">
+        <text class="form-label">邮箱</text>
+        <input 
+          class="form-input" 
+          value="{{editForm.email}}" 
+          placeholder="请输入邮箱"
+          bindinput="onEmailInput"
+          type="email"
+        />
+      </view>
+    </view>
+    <view class="modal-footer">
+      <button class="modal-btn" bindtap="hideEditModal">取消</button>
+      <button class="modal-btn primary" bindtap="saveProfile">保存</button>
+    </view>
+  </view>
+</view>

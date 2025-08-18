@@ -1,0 +1,346 @@
+<!--pages/player/player.wxml-->
+<view class="player-container">
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 主要内容 -->
+  <view class="main-content" wx:else>
+    <!-- 顶部导航栏 -->
+    <view class="top-nav">
+      <view class="nav-container">
+        <!-- 左侧：功能菜单下拉按钮 -->
+        <view class="nav-left">
+          <view class="dropdown-container">
+            <button class="nav-btn menu-btn" bindtap="toggleDropdownMenu">
+              <text class="nav-text">菜单</text>
+              <text class="dropdown-arrow {{showDropdownMenu ? 'arrow-up' : 'arrow-down'}}">▼</text>
+            </button>
+            
+            <!-- 下拉菜单 -->
+            <view class="dropdown-menu {{showDropdownMenu ? 'show' : 'hide'}}" wx:if="{{showDropdownMenu}}" catchtap="preventBubble">
+              <button class="dropdown-item" catchtap="handleMenuAction" data-action="catalog">
+                <text class="dropdown-icon">📖</text>
+                <text class="dropdown-text">目录</text>
+              </button>
+              <button class="dropdown-item" catchtap="handleMenuAction" data-action="notes">
+                <text class="dropdown-icon">✏️</text>
+                <text class="dropdown-text">备注</text>
+              </button>
+              <button class="dropdown-item" catchtap="handleMenuAction" data-action="progress">
+                <text class="dropdown-icon">📈</text>
+                <text class="dropdown-text">统计</text>
+              </button>
+              <button class="dropdown-item" catchtap="handleMenuAction" data-action="generate-audio" 
+                      disabled="{{audioGenerating}}">
+                <text class="dropdown-icon">🎙️</text>
+                <text class="dropdown-text">{{audioGenerating ? '生成中...' : '生成音频'}}</text>
+              </button>
+              <button class="dropdown-item" catchtap="handleMenuAction" data-action="settings" wx:if="{{audioMode}}">
+                <text class="dropdown-icon">🔧</text>
+                <text class="dropdown-text">设置</text>
+              </button>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 中间：课程标题 -->
+        <view class="nav-center">
+          <text class="course-title">{{courseInfo.title}}</text>
+        </view>
+        
+        <!-- 右侧：进度信息 -->
+        <view class="nav-right">
+          <view class="progress-info">
+            <text class="slide-counter">{{formatProgress()}}</text>
+            <view class="progress-bar-mini">
+              <view class="progress-fill-mini" style="width: {{(currentSlideIndex + 1) / totalSlides * 100}}%"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 下拉菜单遮罩层 -->
+    <view class="dropdown-mask {{showDropdownMenu ? 'show' : 'hide'}}" catchtap="closeDropdownMenu" wx:if="{{showDropdownMenu}}"></view>
+
+    <!-- 幻灯片容器 -->
+    <view class="slide-container">
+      <!-- 幻灯片内容 - 🔥 新增自适应样式类支持 -->
+      <view class="slide-content {{currentContentClass}}" wx:if="{{slides[currentSlideIndex]}}" data-char-count="{{currentSlideCharCount}}">
+        
+        <!-- 幻灯片标题 -->
+        <view class="slide-title">
+          <text>{{slides[currentSlideIndex].title}}</text>
+        </view>
+        
+        <!-- 幻灯片内容 -->
+        <view class="slide-body">
+          <view class="content-text">
+            <text>{{slides[currentSlideIndex].content}}</text>
+          </view>
+        </view>
+        
+        <!-- 演讲备注 -->
+        <view class="speaker-notes" wx:if="{{showNotes}}">
+          <view class="notes-header">
+            <text class="notes-icon">💡</text>
+            <text class="notes-title">演讲备注</text>
+            <button class="close-btn" bindtap="toggleNotes">✕</button>
+          </view>
+          <view class="notes-content" wx:if="{{slides[currentSlideIndex] && slides[currentSlideIndex].speaker_notes}}">
+            <text>{{slides[currentSlideIndex].speaker_notes}}</text>
+          </view>
+          <view class="notes-empty" wx:else>
+            <text>暂无演讲备注</text>
+          </view>
+        </view>
+        
+        <!-- 🔥 新增：内容长度指示器 -->
+        <view class="content-indicator" wx:if="{{contentAnalysis}}">
+          <text class="char-count">{{currentSlideCharCount}}字</text>
+          <text class="font-size">字体: {{currentFontSize}}rpx</text>
+        </view>
+      </view>
+      
+      <!-- 空状态 -->
+      <view class="empty-slide" wx:else>
+        <text class="empty-text">暂无幻灯片内容</text>
+      </view>
+    </view>
+
+    <!-- 音频播放器 -->
+    <view class="audio-player" wx:if="{{audioSrc}}">
+      <audio 
+        id="courseAudio"
+        src="{{audioSrc}}"
+        bindended="onAudioEnded"
+        bindtimeupdate="onTimeUpdate"
+        autoplay="{{false}}"
+      ></audio>
+      
+      <view class="audio-controls">
+        <button class="audio-btn" bindtap="{{isAudioPlaying ? 'pauseAudio' : 'playAudio'}}">
+          <text class="audio-icon">{{isAudioPlaying ? '⏸️' : '▶️'}}</text>
+        </button>
+        
+        <view class="audio-progress">
+          <view class="progress-bar">
+            <view class="progress-fill" style="width: {{audioDuration > 0 ? (audioCurrentTime / audioDuration) * 100 : 0}}%"></view>
+          </view>
+          <view class="time-display">
+            <text class="current-time">{{formatTime(audioCurrentTime)}}</text>
+            <text class="total-time">{{formatTime(audioDuration)}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 播放控制按钮 -->
+    <view class="play-controls">
+      <button class="control-btn prev-btn" bindtap="prevSlide" disabled="{{currentSlideIndex <= 0}}">
+        <text class="control-text">上一张</text>
+      </button>
+      
+      <button class="control-btn play-btn" bindtap="{{isPlaying ? 'pauseAudio' : 'playAudio'}}" wx:if="{{audioSrc}}">
+        <text class="control-text play-text">{{isPlaying ? '暂停' : '播放'}}</text>
+      </button>
+      
+      <button class="control-btn next-btn" bindtap="nextSlide" disabled="{{currentSlideIndex >= totalSlides - 1}}">
+        <text class="control-text">下一张</text>
+      </button>
+    </view>
+
+    <!-- 学习进度 -->
+    <view class="learning-progress" wx:if="{{showProgress}}">
+      <view class="progress-header">
+        <text class="progress-title">学习进度</text>
+        <view class="progress-right">
+          <text class="progress-percentage">{{learningProgress.completionRate.toFixed(1)}}%</text>
+          <button class="close-btn" bindtap="toggleProgress">✕</button>
+        </view>
+      </view>
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{learningProgress.completionRate}}%"></view>
+      </view>
+      <view class="progress-info">
+        <text class="study-time">学习时长: {{formatTime(studyDuration)}}</text>
+        <text class="slide-progress">{{currentSlideIndex + 1}} / {{totalSlides}}</text>
+      </view>
+    </view>
+
+    <!-- 音频设置面板 -->
+    <view class="audio-settings-panel" wx:if="{{showAudioSettings && audioMode}}">
+      <!-- 背景遮罩 -->
+      <view class="settings-overlay" bindtap="toggleAudioSettings"></view>
+      
+      <!-- 设置卡片 -->
+      <view class="settings-card">
+        <!-- 右上角退出按钮 -->
+        <button class="settings-close-btn" bindtap="toggleAudioSettings">
+          <text class="close-icon">✕</text>
+          <text class="close-text">退出</text>
+        </button>
+        
+        <view class="settings-header">
+          <view class="header-icon">🎚️</view>
+          <text class="settings-title">音频设置</text>
+        </view>
+        
+        <view class="settings-content">
+        <!-- 播放速度 -->
+        <view class="setting-section">
+          <view class="section-header">
+            <text class="section-icon">⚡</text>
+            <text class="section-title">播放速度</text>
+          </view>
+          <view class="speed-grid">
+            <button class="speed-btn {{playbackRate === 0.5 ? 'active' : ''}}" 
+                    bindtap="onPlaybackRateChange" data-value="0.5">
+              <text class="speed-value">0.5x</text>
+            </button>
+            <button class="speed-btn {{playbackRate === 0.75 ? 'active' : ''}}" 
+                    bindtap="onPlaybackRateChange" data-value="0.75">
+              <text class="speed-value">0.75x</text>
+            </button>
+            <button class="speed-btn {{playbackRate === 1.0 ? 'active' : ''}}" 
+                    bindtap="onPlaybackRateChange" data-value="1.0">
+              <text class="speed-value">1.0x</text>
+            </button>
+            <button class="speed-btn {{playbackRate === 1.25 ? 'active' : ''}}" 
+                    bindtap="onPlaybackRateChange" data-value="1.25">
+              <text class="speed-value">1.25x</text>
+            </button>
+            <button class="speed-btn {{playbackRate === 1.5 ? 'active' : ''}}" 
+                    bindtap="onPlaybackRateChange" data-value="1.5">
+              <text class="speed-value">1.5x</text>
+            </button>
+            <button class="speed-btn {{playbackRate === 2.0 ? 'active' : ''}}" 
+                    bindtap="onPlaybackRateChange" data-value="2.0">
+              <text class="speed-value">2.0x</text>
+            </button>
+          </view>
+        </view>
+
+        <!-- 音量控制 -->
+        <view class="setting-section">
+          <view class="section-header">
+            <text class="section-icon">🔊</text>
+            <text class="section-title">音量</text>
+            <text class="section-value">{{audioSettings.volume}}%</text>
+          </view>
+          <view class="volume-container">
+            <slider class="volume-slider" 
+                    value="{{audioSettings.volume}}" 
+                    min="0" 
+                    max="100" 
+                    bindchange="onVolumeChange"
+                    activeColor="#4F7EFF"
+                    backgroundColor="#F0F2F5"
+                    block-color="#4F7EFF"
+                    block-size="20" />
+          </view>
+        </view>
+
+        <!-- 语音类型 -->
+        <view class="setting-section">
+          <view class="section-header">
+            <text class="section-icon">🎤</text>
+            <text class="section-title">语音类型</text>
+          </view>
+          <picker class="voice-picker" 
+                  bindchange="onVoiceTypeChange" 
+                  range="{{['xiaoyun', 'xiaogang', 'xiaomei', 'xiaofeng']}}">
+            <view class="picker-container">
+              <text class="picker-value">{{audioSettings.voiceType}}</text>
+              <text class="picker-arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+
+        <!-- 播放选项 -->
+        <view class="setting-section">
+          <view class="section-header">
+            <text class="section-icon">🎯</text>
+            <text class="section-title">播放选项</text>
+          </view>
+          <view class="switch-group">
+            <view class="switch-item">
+              <text class="switch-label">自动播放下一张</text>
+              <switch class="custom-switch" 
+                      checked="{{audioSettings.autoPlayNext}}" 
+                      bindchange="onAutoPlayChange"
+                      color="#4F7EFF" />
+            </view>
+            <view class="switch-item">
+              <text class="switch-label">音画同步自动播放</text>
+              <switch class="custom-switch" 
+                      checked="{{syncConfig.autoPlay}}" 
+                      bindchange="onSyncAutoPlayChange"
+                      color="#4F7EFF" />
+            </view>
+          </view>
+        </view>
+
+        <!-- 操作按钮 -->
+        <view class="action-section">
+          <button class="action-btn reset-btn" bindtap="resetAudioSettings">
+            <view class="btn-content">
+              <text class="btn-icon">🔄</text>
+              <text class="btn-text">重置</text>
+            </view>
+          </button>
+          <button class="action-btn preview-btn" bindtap="previewVoice">
+            <view class="btn-content">
+              <text class="btn-icon">🔊</text>
+              <text class="btn-text">预览</text>
+            </view>
+          </button>
+        </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 幻灯片列表 -->
+    <view class="slide-list" wx:if="{{showSlideList}}">
+      <view class="list-header">
+        <text class="list-title">幻灯片列表</text>
+        <button class="close-btn" bindtap="toggleSlideList">✕</button>
+      </view>
+      <scroll-view class="list-content" scroll-y="true">
+        <view 
+          class="slide-item {{index === currentSlideIndex ? 'active' : ''}}" 
+          wx:for="{{slides}}" 
+          wx:key="id"
+          bindtap="goToSlide"
+          data-index="{{index}}"
+        >
+          <view class="slide-number">{{index + 1}}</view>
+          <view class="slide-info">
+            <text class="slide-title">{{item.title}}</text>
+            <text class="slide-duration" wx:if="{{item.duration}}">{{formatTime(item.duration)}}</text>
+          </view>
+          <view class="slide-status">
+            <text class="status-icon" wx:if="{{index < currentSlideIndex}}">✅</text>
+            <text class="status-icon" wx:elif="{{index === currentSlideIndex}}">▶️</text>
+            <text class="status-icon" wx:else>⏸️</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 🆕 音频生成进度组件 -->
+  <audio-progress 
+    visible="{{showAudioProgressModal}}"
+    courseId="{{courseId}}"
+    progress="{{audioGenerationProgress}}"
+    bind:progressUpdate="onAudioProgressUpdate"
+    bind:minimize="onAudioProgressMinimize"
+    bind:cancel="onAudioProgressCancel"
+    bind:retry="onAudioProgressRetry"
+    bind:complete="onAudioProgressComplete">
+  </audio-progress>
+</view>

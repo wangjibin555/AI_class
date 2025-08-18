@@ -1,0 +1,42 @@
+<view class="container">
+  <!-- 顶部综合卡片（插画 + 标题 + 欢迎文案 + 登录状态） -->
+  <view class="home-card">
+    <image class="hero-illustration" src="{{heroImage}}" mode="aspectFill"></image>
+    <text class="home-title">AI课堂</text>
+    <text class="home-subtitle">智能学习，让知识更简单</text>
+
+    <text class="welcome-title">欢迎使用 AI 课堂</text>
+    <text class="welcome-desc">这里是首页内容展示</text>
+
+    <view class="login-status">
+      <text wx:if="{{isLoggedIn}}">用户已登录：{{userInfo.nickname || '微信用户'}}</text>
+      <text wx:else>用户未登录</text>
+    </view>
+
+    <button class="primary-btn" bindtap="goToLogin" wx:if="{{!isLoggedIn}}">立即登录</button>
+    <button class="primary-btn" bindtap="goToProfile" wx:if="{{isLoggedIn}}">个人中心</button>
+  </view>
+
+  <!-- 主要功能 -->
+  <view class="function-menu">
+    <text class="menu-title">主要功能</text>
+    <view class="menu-grid">
+      <view class="menu-item" bindtap="createCourse">
+        <text class="menu-icon">💡</text>
+        <text class="menu-text">创建课件</text>
+      </view>
+      <view class="menu-item" bindtap="myCourses">
+        <text class="menu-icon">📘</text>
+        <text class="menu-text">我的课件</text>
+      </view>
+      <view class="menu-item" bindtap="studyHistory">
+        <text class="menu-icon">🕘</text>
+        <text class="menu-text">学习记录</text>
+      </view>
+      <view class="menu-item" bindtap="aiAssistant">
+        <text class="menu-icon">🤖</text>
+        <text class="menu-text">AI助手</text>
+      </view>
+    </view>
+  </view>
+</view>

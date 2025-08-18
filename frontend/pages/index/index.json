@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "AI课堂",
+  "navigationBarBackgroundColor": "#4A90E2",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#f7f8fc",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark"
+} 

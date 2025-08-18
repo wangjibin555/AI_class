@@ -1,0 +1,351 @@
+<!--pages/course/create/create.wxml-->
+<view class="container">
+  <view class="content-wrapper">
+    <!-- 页面标题 -->
+    <view class="page-header">
+      <text class="page-title">创建课程</text>
+      <text class="page-subtitle">智能生成高质量PPT课件</text>
+    </view>
+
+    <!-- 🆕 简化的生成中加载条 -->
+    <view class="generating-section" wx:if="{{generating || submitting}}">
+      <view class="generating-content">
+        <text class="generating-text">生成中</text>
+        <view class="loading-dots">
+          <view class="dot"></view>
+          <view class="dot"></view>
+          <view class="dot"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 输入方式选择 -->
+    <view class="content-section">
+      <view class="section-title">输入方式</view>
+      <view class="input-methods">
+        <view class="input-method {{inputType === 'url' ? 'active' : ''}}" 
+              bindtap="switchInputType" data-type="url">
+          网页链接
+        </view>
+        <view class="input-method {{inputType === 'text' ? 'active' : ''}}" 
+              bindtap="switchInputType" data-type="text">
+          直接输入
+        </view>
+        <view class="input-method {{inputType === 'file' ? 'active' : ''}}" 
+              bindtap="switchInputType" data-type="file">
+          文件上传
+        </view>
+      </view>
+    </view>
+
+    <!-- URL输入 -->
+    <view class="content-section" wx:if="{{inputType === 'url'}}">
+      <view class="section-title">输入网页链接</view>
+      
+      <!-- 🆕 平台识别显示区域 -->
+      <view class="platform-detection" wx:if="{{showPlatformInfo && detectedPlatform}}">
+        <view class="platform-info">
+          <view class="platform-icon" style="color: {{detectedPlatform.color}}">{{detectedPlatform.icon}}</view>
+          <view class="platform-details">
+            <view class="platform-name">{{detectedPlatform.name}}</view>
+            <view class="platform-description">{{detectedPlatform.description}}</view>
+          </view>
+          <view class="platform-confidence" wx:if="{{detectedPlatform.confidence >= 0.9}}">
+            <text class="confidence-high">✓</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- URL输入区域 -->
+      <view class="url-input-group">
+        <textarea class="url-input" 
+                  value="{{urlInput}}" 
+                  bindinput="onUrlInput"
+                  placeholder="{{generationMode === 'ai_enhanced' ? '请输入网页链接，AI将深度分析内容结构和技术要点...' : '请输入网页链接，如：https://developers.weixin.qq.com/'}}"
+                  placeholder-class="input-placeholder"
+                  auto-height="{{true}}"
+                  maxlength="1000"
+                  show-confirm-bar="{{false}}">
+        </textarea>
+      </view>
+
+      <!-- 🆕 URL验证错误提示 -->
+      <view class="url-validation-errors" wx:if="{{urlValidation && !urlValidation.isValid && urlInput.trim()}}">
+        <view class="error-item" wx:for="{{urlValidation.errors}}" wx:key="*this">
+          <text class="error-icon">⚠️</text>
+          <text class="error-text">{{item}}</text>
+        </view>
+      </view>
+
+      <!-- 🆕 URL验证警告提示 -->
+      <view class="url-validation-warnings" wx:if="{{urlValidation && urlValidation.warnings.length > 0}}">
+        <view class="warning-item" wx:for="{{urlValidation.warnings}}" wx:key="*this">
+          <text class="warning-icon">💡</text>
+          <text class="warning-text">{{item}}</text>
+        </view>
+      </view>
+
+      <!-- 🆕 进度条演示按钮（开发测试用） -->
+      <view class="demo-buttons" wx:if="{{false}}">
+        <button class="demo-btn" bindtap="simulateProgress" size="mini">演示进度条</button>
+        <button class="demo-btn" bindtap="resetProgress" size="mini">重置进度</button>
+      </view>
+    </view>
+
+    <!-- 文本输入 -->
+    <view class="content-section" wx:if="{{inputType === 'text'}}">
+      <view class="section-title">输入文本内容</view>
+      <textarea class="form-input form-textarea" 
+                value="{{textInput}}" 
+                bindinput="onTextInput"
+                placeholder="请输入要生成PPT的文本内容..."
+                maxlength="5000">
+      </textarea>
+    </view>
+
+    <!-- 文件上传 -->
+    <view class="content-section" wx:if="{{inputType === 'file'}}">
+      <view class="section-title">上传文档</view>
+      <view wx:if="{{!selectedFile}}">
+        <button class="upload-btn" bindtap="selectFile">
+          📁 选择文档 (.docx, .pdf, .txt)
+        </button>
+      </view>
+      <view wx:else class="file-info">
+        <view class="file-details">
+          <text>文件名：{{filePreview.name}}</text>
+          <text>大小：{{filePreview.size}}</text>
+          <text>类型：{{filePreview.type}}</text>
+        </view>
+        
+        <!-- 上传进度显示 -->
+        <view wx:if="{{uploading}}" class="upload-progress">
+          <view class="progress-text">上传中... {{uploadProgress}}%</view>
+          <view class="progress-bar-container">
+            <view class="progress-bar" style="width: {{uploadProgress}}%"></view>
+          </view>
+        </view>
+        
+        <!-- 文件操作按钮 -->
+        <view class="file-actions">
+          <button wx:if="{{!fileUploaded && !uploading}}" 
+                  class="upload-file-btn" 
+                  bindtap="uploadFile">
+            📤 上传文件
+          </button>
+          <text wx:if="{{fileUploaded}}" class="upload-success">✅ 上传成功</text>
+          <button class="remove-file-btn" bindtap="removeFile">移除文件</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 🆕 AI生成模式选择 - 优化UI -->
+    <view class="generation-mode-section" wx:if="{{inputType === 'url'}}">
+      <view class="section-title">
+        <text class="title-icon">🤖</text>
+        <text class="title-text">AI生成模式</text>
+      </view>
+      
+      <!-- 模式选择按钮 -->
+      <view class="mode-buttons-container">
+        <button class="mode-button {{generationMode === 'ai_enhanced' ? 'active' : ''}}" 
+                bindtap="switchGenerationMode" data-mode="ai_enhanced">
+          <view class="button-content">
+            <view class="button-icon">🚀</view>
+            <view class="button-text">
+              <text class="button-title">AI智能增强</text>
+              <text class="button-badge">推荐</text>
+            </view>
+          </view>
+        </button>
+        
+        <button class="mode-button {{generationMode === 'traditional' ? 'active' : ''}}" 
+                bindtap="switchGenerationMode" data-mode="traditional">
+          <view class="button-content">
+            <view class="button-icon">⚡</view>
+            <view class="button-text">
+              <text class="button-title">传统快速</text>
+              <text class="button-badge">兼容</text>
+            </view>
+          </view>
+        </button>
+      </view>
+      
+      <!-- 模式特性描述 -->
+      <view class="mode-description">
+        <view class="description-card" wx:if="{{generationMode === 'ai_enhanced'}}">
+          <view class="card-header">
+            <text class="card-icon">✨</text>
+            <text class="card-title">AI智能增强模式</text>
+          </view>
+          <view class="card-content">
+            <text class="card-desc">{{engineType === 'coze' ? '基于Coze的工作流智能分析，生成高质量结构化PPT' : '基于DashScope的深度内容分析，生成高质量结构化PPT'}}</text>
+            <view class="feature-tags">
+              <text class="feature-tag feature-primary">智能结构化</text>
+              <text class="feature-tag feature-success">专业内容</text>
+              <text class="feature-tag feature-info">代码示例</text>
+              <text class="feature-tag feature-warning">最佳实践</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="description-card" wx:if="{{generationMode === 'traditional'}}">
+          <view class="card-header">
+            <text class="card-icon">⚡</text>
+            <text class="card-title">传统快速生成模式</text>
+          </view>
+          <view class="card-content">
+            <text class="card-desc">基于网页爬取的快速PPT生成，速度快，兼容性好</text>
+            <view class="feature-tags">
+              <text class="feature-tag feature-success">速度快</text>
+              <text class="feature-tag feature-info">兼容性好</text>
+              <text class="feature-tag feature-primary">稳定可靠</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- AI引擎选择（AI增强模式下显示） -->
+      <view class="engine-selection" wx:if="{{generationMode === 'ai_enhanced'}}">
+        <view class="engine-header">
+          <text class="engine-icon">🔧</text>
+          <text class="engine-title">AI引擎选择</text>
+        </view>
+        <view class="engine-options">
+          <view class="engine-option {{engineType === 'dashscope' ? 'active' : ''}}"
+                bindtap="switchEngine" data-engine="dashscope">
+            <view class="engine-info">
+              <text class="engine-name">DashScope</text>
+              <text class="engine-desc">通义千问大模型</text>
+            </view>
+            <view class="engine-status online">
+              <text class="status-dot"></text>
+              <text class="status-text">可用</text>
+            </view>
+          </view>
+          
+          <view class="engine-option {{engineType === 'coze' ? 'active' : ''}}"
+                bindtap="switchEngine" data-engine="coze">
+            <view class="engine-info">
+              <text class="engine-name">Coze智能体</text>
+              <text class="engine-desc">专业领域智能体</text>
+            </view>
+            <view class="engine-status online">
+              <text class="status-dot"></text>
+              <text class="status-text">可用</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 课件配置 - 仅在传统快速模式下显示 -->
+    <view class="form-section" wx:if="{{generationMode === 'traditional'}}">
+      <view class="section-title">
+        <text class="title-icon">📝</text>
+        <text class="title-text">课件配置</text>
+      </view>
+      
+      <view class="form-group">
+        <view class="form-label">
+          课件标题
+          <!-- 移除必填标识 -->
+        </view>
+        <input class="form-input" 
+               value="{{formData.title}}" 
+               bindinput="onFormInput"
+               data-field="title"
+               placeholder="请输入课件标题（可选）" />
+      </view>
+      
+      <view class="form-group">
+        <view class="form-label">课件描述</view>
+        <textarea class="form-input form-textarea" 
+                  value="{{formData.description}}" 
+                  bindinput="onFormInput"
+                  data-field="description"
+                  placeholder="请输入课件描述（可选）">
+        </textarea>
+      </view>
+      
+      <!-- 添加说明文本 -->
+      <view class="form-tip">
+        <text class="tip-icon">💡</text>
+        <text class="tip-text">传统快速模式下，如果不填写标题，系统将根据内容自动生成标题</text>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-section">
+      <!-- 🆕 生成完成后显示再次生成按钮 -->
+      <view wx:if="{{generationCompleted}}" class="regenerate-section">
+        <button class="regenerate-btn primary" bindtap="regeneratePPT">
+          <view class="btn-content">
+            <text class="btn-icon">🔄</text>
+            <text class="btn-text">再次生成</text>
+          </view>
+        </button>
+        
+        <button class="regenerate-btn secondary" bindtap="quickRegenerate">
+          <view class="btn-content">
+            <text class="btn-icon">⚡</text>
+            <text class="btn-text">快速重新生成</text>
+          </view>
+        </button>
+      </view>
+      
+      <!-- 🆕 正常生成按钮（未完成时显示） -->
+      <button wx:else
+              class="submit-btn {{generationMode === 'ai_enhanced' ? 'ai-enhanced' : 'traditional'}}" 
+              bindtap="submitCourse" 
+              loading="{{submitting && !generating}}"
+              disabled="{{submitting || generating}}">
+        <!-- AI增强模式按钮 -->
+        <view class="btn-content" wx:if="{{generationMode === 'ai_enhanced'}}">
+          <text class="btn-icon">🚀</text>
+          <text class="btn-text">
+            <text wx:if="{{generating}}">AI智能生成中...</text>
+            <text wx:elif="{{submitting}}">AI分析中...</text>
+            <text wx:else>开始AI智能生成</text>
+          </text>
+        </view>
+        
+        <!-- 传统模式按钮 -->
+        <view class="btn-content" wx:else>
+          <text class="btn-icon">⚡</text>
+          <text class="btn-text">
+            <text wx:if="{{generating}}">快速生成中...</text>
+            <text wx:elif="{{submitting}}">提交中...</text>
+            <text wx:else>开始快速生成</text>
+          </text>
+        </view>
+      </button>
+      
+      <!-- 提示信息 -->
+      <view class="action-tips">
+        <text class="action-tip" wx:if="{{!generating && !submitting && generationMode === 'ai_enhanced'}}">
+          AI智能分析需要2-3分钟，请耐心等待 ✨
+        </text>
+        
+        <text class="action-tip" wx:elif="{{!generating && !submitting && generationMode === 'traditional'}}">
+          传统生成通常1-2分钟，速度较快 ⚡
+        </text>
+        
+        <text class="action-tip processing" wx:elif="{{generating && !generationCompleted}}">
+          <text class="processing-dot"></text>
+          正在生成中，请勿离开页面...
+        </text>
+        
+        <text class="action-tip success" wx:elif="{{generationCompleted}}">
+          <text class="success-icon">✅</text>
+          即将跳转到课程详情页面...
+        </text>
+        
+        <text class="action-tip analyzing" wx:elif="{{submitting && generationMode === 'ai_enhanced'}}">
+          <text class="analyzing-icon">🤖</text>
+          AI正在深度分析内容...
+        </text>
+      </view>
+    </view>
+  </view>
+</view>

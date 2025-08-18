@@ -1,0 +1,25 @@
+-- 创建幻灯片表
+CREATE TABLE `slides` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '幻灯片ID',
+  `course_id` bigint unsigned NOT NULL COMMENT '课件ID',
+  `slide_number` int unsigned NOT NULL COMMENT '幻灯片序号',
+  `title` varchar(200) DEFAULT NULL COMMENT '幻灯片标题',
+  `content` longtext COMMENT '幻灯片内容',
+  `speaker_notes` longtext COMMENT '演讲备注',
+  `layout_type` enum('title','content','image','quote','list','comparison') DEFAULT 'content' COMMENT '布局类型',
+  `background_color` varchar(20) DEFAULT '#ffffff' COMMENT '背景色',
+  `text_color` varchar(20) DEFAULT '#000000' COMMENT '文字颜色',
+  `font_size` int unsigned DEFAULT '24' COMMENT '字体大小',
+  `image_url` varchar(500) DEFAULT NULL COMMENT '幻灯片图片URL',
+  `audio_url` varchar(500) DEFAULT NULL COMMENT '音频文件URL',
+  `audio_duration` int unsigned DEFAULT '0' COMMENT '音频时长(秒)',
+  `audio_file_size` bigint unsigned DEFAULT '0' COMMENT '音频文件大小(字节)',
+  `transition_type` varchar(20) DEFAULT 'fade' COMMENT '切换动画类型',
+  `auto_advance_time` int unsigned DEFAULT '0' COMMENT '自动切换时间(秒)',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_course_slide` (`course_id`, `slide_number`),
+  KEY `idx_course_id` (`course_id`),
+  CONSTRAINT `fk_slides_course_id` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='幻灯片表';

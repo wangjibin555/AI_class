@@ -1,0 +1,8 @@
+<view class="login-prompt" wx:if="{{show}}">
+  <view class="prompt-content">
+    <image class="prompt-icon" src="{{iconUrl}}" mode="aspectFit"></image>
+    <text class="prompt-title">{{title}}</text>
+    <text class="prompt-desc">{{desc}}</text>
+    <button class="login-btn" bindtap="goToLogin">{{btnText}}</button>
+  </view>
+</view> 

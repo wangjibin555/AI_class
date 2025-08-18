@@ -1,0 +1,140 @@
+<!-- components/audio/audio-controller.wxml -->
+<view class="audio-controller" wx:if="{{audioMode && showControls}}">
+  <!-- 主控制面板 -->
+  <view class="main-controls">
+    <!-- 播放/暂停按钮 -->
+    <view class="play-control">
+      <button class="control-btn play-btn" bindtap="togglePlay">
+        <text class="control-icon">{{isPlaying ? '⏸️' : '▶️'}}</text>
+      </button>
+    </view>
+    
+    <!-- 进度信息 -->
+    <view class="progress-info">
+      <text class="time-text">{{formatTime(currentTime)}}</text>
+      <view class="progress-container">
+        <slider 
+          class="progress-slider"
+          value="{{duration > 0 ? (currentTime / duration * 100) : 0}}"
+          max="100"
+          min="0"
+          backgroundColor="#e9ecef"
+          activeColor="#007bff"
+          blockColor="#007bff"
+          blockSize="16"
+          bindchange="onProgressChange"
+        />
+      </view>
+      <text class="time-text">{{formatTime(duration)}}</text>
+    </view>
+    
+    <!-- 功能按钮组 -->
+    <view class="function-controls">
+      <!-- 播放速度 -->
+      <view class="control-group">
+        <button class="control-btn speed-btn" bindtap="toggleSpeedPanel">
+          <text class="control-icon">⚡</text>
+          <text class="control-label">{{selectedSpeed}}x</text>
+        </button>
+        
+        <!-- 速度选择面板 -->
+        <view class="speed-panel" wx:if="{{showSpeedPanel}}">
+          <view class="panel-title">播放速度</view>
+          <view class="speed-options">
+            <button 
+              wx:for="{{speeds}}" 
+              wx:key="index"
+              class="speed-option {{selectedSpeed === item ? 'active' : ''}}"
+              data-speed="{{item}}"
+              bindtap="selectSpeed"
+            >
+              {{item}}x
+            </button>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 音量控制 -->
+      <view class="control-group">
+        <button class="control-btn volume-btn" bindtap="toggleVolumePanel">
+          <text class="control-icon">{{volume > 0 ? '🔊' : '🔇'}}</text>
+        </button>
+        
+        <!-- 音量调节面板 -->
+        <view class="volume-panel" wx:if="{{showVolumePanel}}">
+          <view class="panel-title">音量调节</view>
+          <view class="volume-container">
+            <slider 
+              class="volume-slider"
+              value="{{volume}}"
+              max="100"
+              min="0"
+              backgroundColor="#e9ecef"
+              activeColor="#28a745"
+              blockColor="#28a745"
+              blockSize="14"
+              bindchange="onVolumeChange"
+            />
+            <text class="volume-text">{{volume}}%</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 音频状态指示器 -->
+  <view class="audio-status" wx:if="{{isPlaying}}">
+    <view class="status-indicator">
+      <view class="wave-animation">
+        <view class="wave wave1"></view>
+        <view class="wave wave2"></view>
+        <view class="wave wave3"></view>
+      </view>
+      <text class="status-text">正在播放音频讲解</text>
+    </view>
+  </view>
+  
+  <!-- 同步状态显示 -->
+  <view class="sync-status" wx:if="{{syncConfig.enabled}}">
+    <view class="sync-indicator">
+      <text class="sync-icon">🎯</text>
+      <text class="sync-text">音画同步中</text>
+    </view>
+  </view>
+</view>
+
+<!-- 音频生成中的提示 -->
+<view class="audio-generating" wx:if="{{audioGenerating}}">
+  <view class="generating-content">
+    <view class="loading-animation">
+      <view class="spinner"></view>
+    </view>
+    <text class="generating-text">正在生成音频讲解...</text>
+    <text class="generating-tip">请稍候，AI正在为您生成专业的语音讲解</text>
+    
+    <!-- 简化的进度显示 -->
+    <view class="generation-progress" wx:if="{{audioProgress || audioGenerationProgress}}">
+      <view class="progress-bar-small">
+        <view class="progress-fill-small" style="width: {{(audioProgress && audioProgress.percentage) || (audioGenerationProgress && audioGenerationProgress.percentage) || 0}}%"></view>
+      </view>
+      <text class="progress-text">{{(audioProgress && audioProgress.message) || (audioGenerationProgress && audioGenerationProgress.message) || '正在处理...'}}</text>
+    </view>
+    
+    <!-- 查看详细进度按钮 -->
+    <button class="view-progress-btn" bindtap="showDetailProgress" wx:if="{{!showProgressModal}}">
+      查看详细进度
+    </button>
+  </view>
+</view>
+
+<!-- 🆕 音频生成进度组件 -->
+<audio-progress 
+  visible="{{showProgressModal}}"
+  courseId="{{courseId}}"
+  progress="{{audioGenerationProgress}}"
+  bind:progressUpdate="onProgressUpdate"
+  bind:minimize="onProgressMinimize"
+  bind:cancel="onProgressCancel"
+  bind:retry="onProgressRetry"
+  bind:complete="onProgressComplete">
+</audio-progress> 

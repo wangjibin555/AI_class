@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试3</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .presentation {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .slide {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            margin: 40px 0;
+            padding: 50px;
+            min-height: 600px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .slide:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+        }
+        
+        .slide-header {
+            border-bottom: 3px solid #f8f9fa;
+            padding-bottom: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .slide-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .slide-title {
+            font-size: 2.8em;
+            color: #2c3e50;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .slide.title-slide .slide-title {
+            font-size: 4em;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+        }
+        
+        .slide-content {
+            font-size: 1.3em;
+            line-height: 1.8;
+            color: #34495e;
+        }
+        
+        .slide-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 30px 0;
+        }
+        
+        .slide-content li {
+            margin: 20px 0;
+            padding: 15px 0 15px 50px;
+            position: relative;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .slide-content li:hover {
+            color: #667eea;
+            transform: translateX(10px);
+        }
+
+        .slide-content li::before {
+            content: '▶';
+            color: #667eea;
+            position: absolute;
+            left: 0;
+            top: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .keywords {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 6px solid #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .keywords-title {
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #667eea;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+        }
+
+        .keywords-title::before {
+            content: '🏷️';
+            margin-right: 10px;
+        }
+        
+        .keyword-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.9em;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .keyword-tag:hover {
+            transform: translateY(-2px);
+        }
+        
+        .slide-notes {
+            background: linear-gradient(135deg, #fff9c4, #fffacd);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 6px solid #ffc107;
+            font-style: italic;
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.1);
+        }
+
+        .slide-notes::before {
+            content: '💡 ';
+            font-style: normal;
+            font-weight: bold;
+        }
+        
+        .metadata {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1em;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            margin: 40px 0;
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            z-index: 1000;
+            transition: width 0.3s ease;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .presentation { padding: 10px; }
+            .slide { padding: 30px 20px; margin: 20px 0; }
+            .slide-title { font-size: 2em; }
+            .slide.title-slide .slide-title { font-size: 2.5em; }
+        }
+
+        /* 打印样式 */
+        @media print {
+            .slide {
+                page-break-after: always;
+                margin: 0;
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            body { background: white; }
+            .progress-bar { display: none; }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 进度条功能
+            const progressBar = document.querySelector('.progress-bar');
+            const updateProgress = () => {
+                const scrollTop = window.pageYOffset;
+                const docHeight = document.body.scrollHeight - window.innerHeight;
+                const progress = (scrollTop / docHeight) * 100;
+                progressBar.style.width = progress + '%';
+            };
+            
+            window.addEventListener('scroll', updateProgress);
+            
+            // 幻灯片导航
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach((slide, index) => {
+                slide.addEventListener('click', () => {
+                    if (index < slides.length - 1) {
+                        slides[index + 1].scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // 键盘导航
+            let currentSlide = 0;
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    e.preventDefault();
+                    if (currentSlide < slides.length - 1) {
+                        currentSlide++;
+                        slides[currentSlide].scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    if (currentSlide > 0) {
+                        currentSlide--;
+                        slides[currentSlide].scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+            
+            // 幻灯片动画
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '0px 0px -100px 0px'
+            };
+            
+            const slideObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                        currentSlide = Array.from(slides).indexOf(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            slides.forEach(slide => {
+                slide.style.opacity = '0.8';
+                slide.style.transform = 'translateY(20px)';
+                slide.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                slideObserver.observe(slide);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="progress-bar"></div>
+    <div class="presentation">
+        <div class="slide title-slide">
+            <div class="slide-header">
+                <div class="slide-number">第 1 页</div>
+                <h1 class="slide-title">人工智能概述</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>定义与目标</li>
+                    <li>技术核心</li>
+                    <li>应用潜力</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">人工智能</span>
+                <span class="keyword-tag">机器智能</span>
+                <span class="keyword-tag">任务执行</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看人工智能概述的相关内容。主要包括：定义与目标；技术核心；应用潜力；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 2 页</div>
+                <h1 class="slide-title">人工智能的历史发展</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>起源与里程碑</li>
+                    <li>发展阶段</li>
+                    <li>关键理论</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">达特茅斯会议</span>
+                <span class="keyword-tag">符号主义</span>
+                <span class="keyword-tag">深度学习</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看人工智能的历史发展的相关内容。主要包括：起源与里程碑；发展阶段；关键理论；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 3 页</div>
+                <h1 class="slide-title">人工智能的主要技术</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>机器学习</li>
+                    <li>深度学习</li>
+                    <li>自然语言处理</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">机器学习</span>
+                <span class="keyword-tag">深度学习</span>
+                <span class="keyword-tag">计算机视觉</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看人工智能的主要技术的相关内容。主要包括：机器学习；深度学习；自然语言处理；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 4 页</div>
+                <h1 class="slide-title">人工智能的应用领域</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>医疗领域</li>
+                    <li>金融行业</li>
+                    <li>制造行业</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">医疗应用</span>
+                <span class="keyword-tag">金融分析</span>
+                <span class="keyword-tag">智能制造</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看人工智能的应用领域的相关内容。主要包括：医疗领域；金融行业；制造行业；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 5 页</div>
+                <h1 class="slide-title">人工智能的挑战与问题</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>数据隐私问题</li>
+                    <li>算法偏见</li>
+                    <li>伦理争议</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">数据隐私</span>
+                <span class="keyword-tag">算法偏见</span>
+                <span class="keyword-tag">伦理问题</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看人工智能的挑战与问题的相关内容。主要包括：数据隐私问题；算法偏见；伦理争议；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 6 页</div>
+                <h1 class="slide-title">人工智能的未来发展趋势</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>智能化提升</li>
+                    <li>自主化发展</li>
+                    <li>普及化趋势</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">算力提升</span>
+                <span class="keyword-tag">算法优化</span>
+                <span class="keyword-tag">普及化</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看人工智能的未来发展趋势的相关内容。主要包括：智能化提升；自主化发展；普及化趋势；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 7 页</div>
+                <h1 class="slide-title">人工智能与社会的关系</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>社会结构变化</li>
+                    <li>经济影响</li>
+                    <li>新机遇</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">社会变革</span>
+                <span class="keyword-tag">经济增长</span>
+                <span class="keyword-tag">机遇</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看人工智能与社会的关系的相关内容。主要包括：社会结构变化；经济影响；新机遇；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 8 页</div>
+                <h1 class="slide-title">人工智能的伦理与法律问题</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>公平性保障</li>
+                    <li>透明性要求</li>
+                    <li>可控性设计</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">伦理问题</span>
+                <span class="keyword-tag">法律规范</span>
+                <span class="keyword-tag">透明性</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看人工智能的伦理与法律问题的相关内容。主要包括：公平性保障；透明性要求；可控性设计；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 9 页</div>
+                <h1 class="slide-title">人工智能的教育意义</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>教学方法革新</li>
+                    <li>课程内容更新</li>
+                    <li>教育公平性</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">教育变革</span>
+                <span class="keyword-tag">课程创新</span>
+                <span class="keyword-tag">教育公平</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看人工智能的教育意义的相关内容。主要包括：教学方法革新；课程内容更新；教育公平性；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 10 页</div>
+                <h1 class="slide-title">总结与展望</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>技术潜力</li>
+                    <li>伦理考量</li>
+                    <li>法律规范</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">技术发展</span>
+                <span class="keyword-tag">伦理平衡</span>
+                <span class="keyword-tag">法律框架</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看总结与展望的相关内容。主要包括：技术潜力；伦理考量；法律规范；
+            </div>
+                    </div>
+        
+        <div class="metadata">
+            <p>生成时间: 2025-07-25 13:34:54 | 模板: business | 总页数: 10</p>
+            <p>由 AI课堂 智能生成</p>
+        </div>
+    </div>
+</body>
+</html>

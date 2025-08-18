@@ -1,0 +1,25 @@
+-- 创建用户表
+CREATE TABLE `users` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+  `openid` varchar(64) NOT NULL COMMENT '微信OpenID',
+  `union_id` varchar(64) DEFAULT NULL COMMENT '微信UnionID',
+  `nickname` varchar(100) DEFAULT NULL COMMENT '用户昵称',
+  `avatar_url` varchar(255) DEFAULT NULL COMMENT '头像URL',
+  `phone` varchar(20) DEFAULT NULL COMMENT '手机号',
+  `email` varchar(100) DEFAULT NULL COMMENT '邮箱',
+  `vip_level` tinyint unsigned NOT NULL DEFAULT '0' COMMENT 'VIP等级：0-普通用户，1-月度会员，2-年度会员',
+  `vip_expired_at` timestamp NULL DEFAULT NULL COMMENT 'VIP过期时间',
+  `credits` int unsigned NOT NULL DEFAULT '100' COMMENT '剩余积分',
+  `total_courses_created` int unsigned NOT NULL DEFAULT '0' COMMENT '创建课件总数',
+  `total_study_time` int unsigned NOT NULL DEFAULT '0' COMMENT '总学习时长(秒)',
+  `last_login_at` timestamp NULL DEFAULT NULL COMMENT '最后登录时间',
+  `last_login_ip` varchar(45) DEFAULT NULL COMMENT '最后登录IP',
+  `status` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '状态：0-禁用，1-正常',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_openid` (`openid`),
+  KEY `idx_vip_level` (`vip_level`),
+  KEY `idx_status` (`status`),
+  KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';

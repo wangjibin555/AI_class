@@ -1,0 +1,129 @@
+<!--pages/ai-assistant/ai-assistant.wxml-->
+<view class="container">
+
+
+  <!-- 消息列表 -->
+  <scroll-view 
+    class="messages-container" 
+    scroll-y="true" 
+    scroll-top="{{scrollTop}}"
+    scroll-with-animation="{{autoScroll}}"
+  >
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{isEmpty}}">
+      <view class="welcome-message">
+        <view class="ai-avatar">
+          <text class="avatar-icon">🤖</text>
+        </view>
+        <view class="welcome-bubble">
+          <text class="welcome-text">你好！😊 请问有什么可以帮您解决的吗？</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 消息列表 -->
+    <view class="messages-list" wx:else>
+      <view 
+        class="message-item {{item.type}}"
+        wx:for="{{messages}}"
+        wx:key="id"
+        data-content="{{item.content}}"
+        bindlongpress="copyMessage"
+      >
+        <!-- 用户消息 -->
+        <view class="user-message" wx:if="{{item.type === 'user'}}">
+          <view class="user-bubble">
+            <text class="message-text">{{item.content}}</text>
+          </view>
+        </view>
+        
+        <!-- AI消息 -->
+        <view class="ai-message" wx:if="{{item.type === 'ai'}}">
+          <view class="ai-avatar">
+            <text class="avatar-icon">🤖</text>
+          </view>
+          <view class="ai-content">
+            <view class="ai-bubble">
+              <text class="message-text">{{item.content}}</text>
+              <!-- 代码块检测和处理 -->
+              <view class="code-block" wx:if="{{item.hasCode}}">
+                <view class="code-header">
+                  <text class="code-lang">{{item.codeLanguage || 'code'}}</text>
+                  <button class="copy-btn" data-content="{{item.codeContent}}" bindtap="copyCode">
+                    <text class="copy-icon">📋</text>
+                    <text class="copy-text">复制</text>
+                  </button>
+                </view>
+                <view class="code-content">
+                  <text class="code-text">{{item.codeContent}}</text>
+                </view>
+              </view>
+            </view>
+            <view class="message-actions">
+              <button class="action-btn" bindtap="copyMessage" data-content="{{item.content}}">
+                <text class="action-icon">📋</text>
+              </button>
+              <button class="action-btn" bindtap="likeMessage" data-index="{{index}}">
+                <text class="action-icon">👍</text>
+              </button>
+              <button class="action-btn" bindtap="dislikeMessage" data-index="{{index}}">
+                <text class="action-icon">👎</text>
+              </button>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-message" wx:if="{{isLoading}}">
+      <view class="ai-message">
+        <view class="ai-avatar">
+          <text class="avatar-icon">🤖</text>
+        </view>
+        <view class="ai-content">
+          <view class="ai-bubble loading">
+            <view class="typing-indicator">
+              <view class="typing-dots">
+                <view class="dot"></view>
+                <view class="dot"></view>
+                <view class="dot"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部新对话按钮 -->
+  <view class="bottom-actions" wx:if="{{!isEmpty}}">
+    <button class="new-chat-btn" bindtap="newChat">
+      <text class="new-chat-icon">+</text>
+      <text class="new-chat-text">新对话</text>
+    </button>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-container">
+    <view class="input-wrapper">
+      <input 
+        class="message-input"
+        placeholder="给 大模型 发送消息"
+        value="{{inputMessage}}"
+        bindinput="onInputChange"
+        confirm-type="send"
+        bindconfirm="sendMessage"
+        disabled="{{isLoading}}"
+      />
+      <button 
+        class="send-btn {{inputMessage && !isLoading ? 'active' : ''}}"
+        bindtap="sendMessage"
+        disabled="{{isLoading || !inputMessage}}"
+      >
+        <text class="send-icon" wx:if="{{!isLoading}}">↑</text>
+        <view class="loading-spinner" wx:else></view>
+      </button>
+    </view>
+  </view>
+</view> 

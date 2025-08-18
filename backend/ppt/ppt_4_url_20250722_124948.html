@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>csdn数据库文件测试</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-x: hidden;
+        }
+        
+        .presentation {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .slide {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin: 30px 0;
+            padding: 40px;
+            min-height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .slide-header {
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .slide-number {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .slide-title {
+            font-size: 2.5em;
+            color: #333;
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .slide.title-slide .slide-title {
+            font-size: 3.5em;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .slide-content {
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #555;
+        }
+        
+        .slide-content ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .slide-content li {
+            margin: 15px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .slide-content li:before {
+            content: '▶';
+            color: #667eea;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .keywords {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .keywords-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        
+        .keyword-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            margin: 3px;
+            font-size: 0.9em;
+        }
+        
+        .slide-notes {
+            background: #fff9c4;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+            font-style: italic;
+        }
+        
+        .metadata {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 0.9em;
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: #667eea;
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+        
+        @media print {
+            .slide {
+                page-break-after: always;
+                margin: 0;
+                box-shadow: none;
+            }
+            
+            body {
+                background: white;
+            }
+        }
+    </style>
+    <script>
+        function updateProgress() {
+            const slides = document.querySelectorAll('.slide');
+            const progressBar = document.querySelector('.progress-bar');
+            
+            window.addEventListener('scroll', () => {
+                const scrollTop = window.pageYOffset;
+                const docHeight = document.body.scrollHeight - window.innerHeight;
+                const progress = (scrollTop / docHeight) * 100;
+                progressBar.style.width = progress + '%';
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', updateProgress);
+    </script>
+</head>
+<body>
+    <div class="progress-bar"></div>
+    <div class="presentation">
+        
+        <div class="slide title-slide">
+            <div class="slide-header">
+                <div class="slide-number">第 1 页</div>
+                <h1 class="slide-title">结构化内容总结与PPT规划</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <p>主题：结构化内容总结与PPT规划
+生成时间：2025年07月22日</p>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">结构化内容总结与PPT规划</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 欢迎大家，今天我们将学习关于结构化内容总结与PPT规划的内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 2 页</div>
+                <h1 class="slide-title">主要内容概述</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>原始内容包含复杂的文本信息，涉及多个主题。</li>
+                    
+                        <li>需要提取核心观点并将其结构化为适合PPT展示的8个主要部分。</li>
+                    
+                        <li>目标受众是普通观众，难度为中级，风格需专业。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">主要内容概述</span>
+                
+                    <span class="keyword-tag">原始内容包含复杂的文本信息，涉及多个主题。</span>
+                
+                    <span class="keyword-tag">需要提取核心观点并将其结构化为适合PPT展示的8个主要部分。</span>
+                
+                    <span class="keyword-tag">目标受众是普通观众，难度为中级，风格需专业。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看主要内容概述的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 3 页</div>
+                <h1 class="slide-title">主题提取</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>原始内容可能涵盖技术、逻辑推理或理论分析。</li>
+                    
+                        <li>需要识别其中的核心主题和关键论点。</li>
+                    
+                        <li>确保内容清晰且易于理解。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">主题提取</span>
+                
+                    <span class="keyword-tag">原始内容可能涵盖技术、逻辑推理或理论分析。</span>
+                
+                    <span class="keyword-tag">需要识别其中的核心主题和关键论点。</span>
+                
+                    <span class="keyword-tag">确保内容清晰且易于理解。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看主题提取的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 4 页</div>
+                <h1 class="slide-title">内容分解</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>将原始内容划分为8个主要部分。</li>
+                    
+                        <li>每个部分应有明确的主题和要点。</li>
+                    
+                        <li>确保各部分内容之间有逻辑关联。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">内容分解</span>
+                
+                    <span class="keyword-tag">将原始内容划分为8个主要部分。</span>
+                
+                    <span class="keyword-tag">每个部分应有明确的主题和要点。</span>
+                
+                    <span class="keyword-tag">确保各部分内容之间有逻辑关联。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看内容分解的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 5 页</div>
+                <h1 class="slide-title">标题设计</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>为每个章节设计简洁明了的标题。</li>
+                    
+                        <li>标题应反映章节的核心内容。</li>
+                    
+                        <li>避免使用过于复杂的术语。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">标题设计</span>
+                
+                    <span class="keyword-tag">为每个章节设计简洁明了的标题。</span>
+                
+                    <span class="keyword-tag">标题应反映章节的核心内容。</span>
+                
+                    <span class="keyword-tag">避免使用过于复杂的术语。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看标题设计的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 6 页</div>
+                <h1 class="slide-title">要点提炼</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>从每个章节中提取3-5个关键要点。</li>
+                    
+                        <li>要点应简短、清晰，并支持主题。</li>
+                    
+                        <li>确保要点能够支撑整体内容。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">要点提炼</span>
+                
+                    <span class="keyword-tag">从每个章节中提取3-5个关键要点。</span>
+                
+                    <span class="keyword-tag">要点应简短、清晰，并支持主题。</span>
+                
+                    <span class="keyword-tag">确保要点能够支撑整体内容。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看要点提炼的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 7 页</div>
+                <h1 class="slide-title">逻辑结构</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>确保PPT内容具有连贯性和逻辑性。</li>
+                    
+                        <li>章节顺序应符合认知流程。</li>
+                    
+                        <li>从引入到深入再到总结，逐步展开。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">逻辑结构</span>
+                
+                    <span class="keyword-tag">确保PPT内容具有连贯性和逻辑性。</span>
+                
+                    <span class="keyword-tag">章节顺序应符合认知流程。</span>
+                
+                    <span class="keyword-tag">从引入到深入再到总结，逐步展开。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看逻辑结构的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 8 页</div>
+                <h1 class="slide-title">语言表达</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>使用专业但不晦涩的语言。</li>
+                    
+                        <li>避免冗长描述，保持简洁。</li>
+                    
+                        <li>适合作为幻灯片展示，便于观众理解。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">语言表达</span>
+                
+                    <span class="keyword-tag">使用专业但不晦涩的语言。</span>
+                
+                    <span class="keyword-tag">避免冗长描述，保持简洁。</span>
+                
+                    <span class="keyword-tag">适合作为幻灯片展示，便于观众理解。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看语言表达的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 9 页</div>
+                <h1 class="slide-title">总结与展望</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <ul>
+                    
+                        <li>总结整个内容的核心观点。</li>
+                    
+                        <li>强调其在实际应用中的价值。</li>
+                    
+                        <li>为后续学习或实践提供方向。</li>
+                    
+                    </ul>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">总结与展望</span>
+                
+                    <span class="keyword-tag">总结整个内容的核心观点。</span>
+                
+                    <span class="keyword-tag">强调其在实际应用中的价值。</span>
+                
+                    <span class="keyword-tag">为后续学习或实践提供方向。</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看总结与展望的相关内容
+            </div>
+            
+        </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 10 页</div>
+                <h1 class="slide-title">总结</h1>
+            </div>
+            
+            <div class="slide-content">
+                
+                    <p>本PPT旨在通过结构化的方式呈现复杂内容，将其拆解为8个逻辑清晰的章节，每章包含简洁的标题和要点，以满足中级难度、面向普通观众的专业需求。整体内容将围绕核心主题展开，突出重点，便于理解和传播。</p>
+                
+            </div>
+            
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                
+                    <span class="keyword-tag">总结</span>
+                
+                    <span class="keyword-tag">结论</span>
+                
+            </div>
+            
+            
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 让我们来总结今天学习的主要内容
+            </div>
+            
+        </div>
+        
+        
+        <div class="metadata">
+            <p>生成时间: 2025-07-22 12:49:48 | 模板: business | 总页数: 10</p>
+            <p>由 AI课堂 智能生成</p>
+        </div>
+    </div>
+</body>
+</html>

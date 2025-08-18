@@ -1,0 +1,131 @@
+<!-- 音频生成进度组件 -->
+<view class="audio-progress-container" wx:if="{{visible}}">
+  <view class="progress-modal">
+    <view class="progress-header">
+      <view class="progress-icon">
+        <view class="audio-wave-icon">
+          <view class="wave-bar wave-1"></view>
+          <view class="wave-bar wave-2"></view>
+          <view class="wave-bar wave-3"></view>
+          <view class="wave-bar wave-4"></view>
+        </view>
+      </view>
+      <view class="progress-title">
+        <text class="title-text">🎙️ AI音频生成</text>
+        <text class="subtitle-text">正在为您的PPT生成专业语音讲解</text>
+      </view>
+    </view>
+
+    <!-- 整体进度条 -->
+    <view class="overall-progress">
+      <view class="progress-info">
+        <text class="progress-label">总进度</text>
+        <text class="progress-percentage">{{Math.floor(progress.percentage || 0)}}%</text>
+      </view>
+      
+      <view class="progress-bar-container">
+        <view class="progress-bar-background">
+          <view class="progress-bar-fill" style="width: {{progress.percentage || 0}}%">
+            <view class="progress-bar-glow"></view>
+          </view>
+        </view>
+      </view>
+      
+      <view class="progress-stats">
+        <text class="stat-item">{{(progress.completedSlides && progress.completedSlides.length !== undefined) ? progress.completedSlides.length : (progress.completedSlides || 0)}} / {{progress.totalSlides || 0}} 已完成</text>
+        <text class="stat-divider">•</text>
+        <text class="stat-item" wx:if="{{estimatedTime}}">预计剩余 {{estimatedTime}}</text>
+      </view>
+    </view>
+
+    <!-- 当前处理状态 -->
+    <view class="current-status" wx:if="{{progress.currentSlide}}">
+      <view class="status-header">
+        <text class="status-label">当前处理</text>
+        <view class="status-indicator {{progress.status}}"></view>
+      </view>
+      
+      <view class="current-slide">
+        <view class="slide-icon">📄</view>
+        <view class="slide-info">
+          <text class="slide-title">{{progress.currentSlide}}</text>
+          <text class="slide-index">第 {{(progress.completedSlides || 0) + 1}} 张幻灯片</text>
+        </view>
+      </view>
+      
+      <!-- 当前幻灯片进度 -->
+      <view class="slide-progress" wx:if="{{progress.slideProgress}}">
+        <view class="slide-progress-bar">
+          <view class="slide-progress-fill" style="width: {{progress.slideProgress}}%"></view>
+        </view>
+        <text class="slide-progress-text">{{progress.slideProgressText || '正在生成音频...'}}</text>
+      </view>
+    </view>
+
+    <!-- 详细步骤 -->
+    <view class="progress-steps">
+      <view class="step-item {{item.status}}" wx:for="{{progressSteps}}" wx:key="id">
+        <view class="step-icon">
+          <view class="step-dot" wx:if="{{item.status === 'pending'}}"></view>
+          <view class="step-loading" wx:if="{{item.status === 'processing'}}">
+            <view class="loading-spinner"></view>
+          </view>
+          <view class="step-check" wx:if="{{item.status === 'completed'}}">✓</view>
+          <view class="step-error" wx:if="{{item.status === 'failed'}}">✗</view>
+        </view>
+        <view class="step-content">
+          <text class="step-title">{{item.title}}</text>
+          <text class="step-description" wx:if="{{item.description}}">{{item.description}}</text>
+        </view>
+        <text class="step-time" wx:if="{{item.time}}">{{item.time}}</text>
+      </view>
+    </view>
+
+    <!-- 速度和质量信息 -->
+    <view class="generation-info" wx:if="{{showDetails}}">
+      <view class="info-row">
+        <text class="info-label">生成速度</text>
+        <text class="info-value">{{generationSpeed || '计算中...'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">音频质量</text>
+        <text class="info-value">{{audioQuality || '高质量'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">语音引擎</text>
+        <text class="info-value">{{voiceEngine || 'AI智能语音'}}</text>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="progress-actions">
+      <button class="action-btn secondary" bindtap="onToggleDetails">
+        {{showDetails ? '收起详情' : '查看详情'}}
+      </button>
+      <button class="action-btn secondary" bindtap="onMinimize" wx:if="{{allowMinimize}}">
+        最小化
+      </button>
+      <button class="action-btn danger" bindtap="onCancel" wx:if="{{allowCancel && progress.status === 'processing'}}">
+        取消生成
+      </button>
+    </view>
+
+    <!-- 错误信息 -->
+    <view class="error-message" wx:if="{{progress.errorMessage}}">
+      <view class="error-icon">⚠️</view>
+      <view class="error-content">
+        <text class="error-title">生成遇到问题</text>
+        <text class="error-text">{{progress.errorMessage}}</text>
+      </view>
+      <button class="retry-btn" bindtap="onRetry">重试</button>
+    </view>
+
+    <!-- 完成状态 -->
+    <view class="completion-status" wx:if="{{progress.status === 'completed'}}">
+      <view class="success-icon">🎉</view>
+      <text class="success-title">音频生成完成！</text>
+      <text class="success-subtitle">已为 {{progress.totalSlides}} 张幻灯片生成高质量语音讲解</text>
+      <button class="action-btn primary" bindtap="onComplete">开始播放</button>
+    </view>
+  </view>
+</view>

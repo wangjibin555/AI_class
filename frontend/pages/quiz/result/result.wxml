@@ -1,0 +1,167 @@
+<!--pages/quiz/result/result.wxml-->
+<view class="result-container">
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载结果中...</text>
+  </view>
+
+  <!-- 结果内容 -->
+  <view wx:else class="result-content">
+    <!-- 成绩概览 -->
+    <view class="score-overview">
+      <view class="score-header">
+        <view class="score-icon">🏆</view>
+        <text class="score-title">练习完成</text>
+      </view>
+      
+      <view class="score-main">
+        <view class="score-circle">
+          <view class="score-number">{{score}}</view>
+          <view class="score-total">/ {{totalScore}}</view>
+        </view>
+        <view class="score-percentage">{{percentage.toFixed(1)}}%</view>
+      </view>
+      
+      <view class="grade-info">
+        <view class="grade-badge" style="background-color: {{getGrade().color}}">
+          <text class="grade-text">{{getGrade().grade}}</text>
+        </view>
+        <text class="grade-label">{{getGrade().text}}</text>
+      </view>
+    </view>
+
+    <!-- 统计信息 -->
+    <view class="stats-container">
+      <view class="stats-grid">
+        <view class="stat-item">
+          <view class="stat-value">{{correctCount}}</view>
+          <view class="stat-label">正确题数</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{totalCount}}</view>
+          <view class="stat-label">总题数</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{formatTime(timeSpent)}}</view>
+          <view class="stat-label">用时</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{formatDate(completedAt)}}</view>
+          <view class="stat-label">完成时间</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 标签页切换 -->
+    <view class="tab-container">
+      <view class="tab-header">
+        <view 
+          class="tab-item {{currentTab === 'summary' ? 'active' : ''}}"
+          bindtap="switchTab"
+          data-tab="summary"
+        >
+          <text class="tab-text">成绩概览</text>
+        </view>
+        <view 
+          class="tab-item {{currentTab === 'details' ? 'active' : ''}}"
+          bindtap="switchTab"
+          data-tab="details"
+        >
+          <text class="tab-text">答题详情</text>
+        </view>
+      </view>
+
+      <!-- 成绩概览标签页 -->
+      <view wx:if="{{currentTab === 'summary'}}" class="tab-content">
+        <view class="summary-content">
+          <view class="summary-item">
+            <view class="summary-icon">📊</view>
+            <view class="summary-info">
+              <text class="summary-title">正确率分析</text>
+              <text class="summary-desc">答对了 {{correctCount}} 道题，正确率为 {{percentage.toFixed(1)}}%</text>
+            </view>
+          </view>
+          
+          <view class="summary-item">
+            <view class="summary-icon">⏱️</view>
+            <view class="summary-info">
+              <text class="summary-title">用时统计</text>
+              <text class="summary-desc">总共用时 {{formatTime(timeSpent)}}，平均每题 {{formatTime(timeSpent / totalCount)}}</text>
+            </view>
+          </view>
+          
+          <view class="summary-item">
+            <view class="summary-icon">🎯</view>
+            <view class="summary-info">
+              <text class="summary-title">成绩等级</text>
+              <text class="summary-desc">获得 {{getGrade().text}} 等级，继续加油！</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 答题详情标签页 -->
+      <view wx:elif="{{currentTab === 'details'}}" class="tab-content">
+        <view class="details-content">
+          <view class="details-header">
+            <text class="details-title">答题详情</text>
+            <button class="toggle-answer-btn" bindtap="toggleAnswer">
+              {{showAnswer ? '隐藏答案' : '显示答案'}}
+            </button>
+          </view>
+          
+          <view class="question-list">
+            <view 
+              wx:for="{{questionResults}}" 
+              wx:key="question_id"
+              class="question-item {{item.is_correct ? 'correct' : 'incorrect'}}"
+            >
+              <view class="question-header">
+                <text class="question-number">第 {{index + 1}} 题</text>
+                <view class="question-status">
+                  <text class="status-icon">{{item.is_correct ? '✅' : '❌'}}</text>
+                  <text class="status-text">{{item.is_correct ? '正确' : '错误'}}</text>
+                </view>
+              </view>
+              
+              <view class="question-content">
+                <text class="question-text">{{item.question_text}}</text>
+              </view>
+              
+              <view class="answer-section">
+                <view class="user-answer">
+                  <text class="answer-label">你的答案：</text>
+                  <text class="answer-text">{{item.user_answer || '未作答'}}</text>
+                </view>
+                
+                <view wx:if="{{showAnswer}}" class="correct-answer">
+                  <text class="answer-label">正确答案：</text>
+                  <text class="answer-text correct">{{item.correct_answer}}</text>
+                </view>
+                
+                <view wx:if="{{showAnswer && item.explanation}}" class="explanation">
+                  <text class="explanation-label">解释：</text>
+                  <text class="explanation-text">{{item.explanation}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <button class="action-btn retry-btn" bindtap="retryQuiz">
+        重新练习
+      </button>
+      <button class="action-btn share-btn" bindtap="shareResult">
+        分享结果
+      </button>
+      <button class="action-btn back-btn" bindtap="backToCourse">
+        返回课程
+      </button>
+    </view>
+  </view>
+</view>

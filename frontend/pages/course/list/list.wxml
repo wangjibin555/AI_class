@@ -1,0 +1,223 @@
+<!--pages/course/list/list.wxml-->
+<view class="page-container">
+
+
+  <view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input-wrapper">
+      <input 
+        class="search-input" 
+        type="text" 
+        placeholder="搜索课程..." 
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearchConfirm"
+        bindfocus="onSearchFocus"
+        bindblur="onSearchBlur"
+        disabled="{{isLoading}}"
+      />
+      <view class="search-actions">
+        <view class="search-loading" wx:if="{{isLoading}}">⏳</view>
+        <button class="search-btn" bindtap="onSearchConfirm" wx:else>🔍</button>
+        <button class="clear-btn" bindtap="onSearchClear" wx:if="{{searchKeyword}}">✕</button>
+      </view>
+    </view>
+    
+    <!-- 筛选按钮 -->
+    <button class="filter-btn" bindtap="toggleFilters" disabled="{{isLoading}}">
+      <text class="filter-icon">🔽</text>
+      <text>筛选</text>
+    </button>
+  </view>
+
+  <!-- 搜索历史 -->
+  <view class="search-history" wx:if="{{showSearchHistory && searchHistory.length > 0}}">
+    <view class="history-header">
+      <text class="history-title">搜索历史</text>
+      <button class="clear-history-btn" bindtap="clearSearchHistory">清空</button>
+    </view>
+    <view class="history-list">
+      <view 
+        class="history-item"
+        wx:for="{{searchHistory}}"
+        wx:key="*this"
+        data-keyword="{{item}}"
+        bindtap="onHistoryItemTap"
+      >
+        <text class="history-text">{{item}}</text>
+        <text class="history-delete" data-index="{{index}}" bindtap="deleteHistoryItem">×</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 课件类型切换标签 -->
+  <view class="course-type-tabs">
+    <view 
+      class="tab-item {{courseType === 'mine' ? 'active' : ''}}"
+      bindtap="onCourseTypeChange"
+      data-type="mine"
+    >
+      <text>我的课件</text>
+    </view>
+    <view 
+      class="tab-item {{courseType === 'public' ? 'active' : ''}}"
+      bindtap="onCourseTypeChange"
+      data-type="public"
+    >
+      <text>公开课件</text>
+    </view>
+  </view>
+
+  <!-- 筛选器 -->
+  <view class="filters {{showFilters ? 'show' : ''}}" wx:if="{{showFilters}}">
+    <!-- 状态筛选 -->
+    <view class="filter-section">
+      <text class="filter-title">状态</text>
+      <scroll-view class="filter-options" scroll-x>
+        <view 
+          class="filter-option {{filters.status === item.value ? 'active' : ''}}"
+          wx:for="{{statusOptions}}"
+          wx:key="value"
+          data-status="{{item.value}}"
+          bindtap="onStatusFilter"
+        >
+          {{item.label}}
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 分类筛选 -->
+    <view class="filter-section">
+      <text class="filter-title">分类</text>
+      <scroll-view class="filter-options" scroll-x>
+        <view 
+          class="filter-option {{filters.category === item.value ? 'active' : ''}}"
+          wx:for="{{categoryOptions}}"
+          wx:key="value"
+          data-category="{{item.value}}"
+          bindtap="onCategoryFilter"
+        >
+          {{item.label}}
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 排序筛选 -->
+    <view class="filter-section">
+      <text class="filter-title">排序</text>
+      <scroll-view class="filter-options" scroll-x>
+        <view 
+          class="filter-option {{filters.sort === item.value ? 'active' : ''}}"
+          wx:for="{{sortOptions}}"
+          wx:key="value"
+          data-sort="{{item.value}}"
+          bindtap="onSortFilter"
+        >
+          {{item.label}}
+          <text class="sort-arrow" wx:if="{{filters.sort === item.value}}">
+            {{filters.order === 'desc' ? '↓' : '↑'}}
+          </text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 筛选器操作按钮 -->
+    <view class="filter-actions">
+      <button class="reset-btn" bindtap="resetFilters">重置筛选</button>
+      <button class="apply-btn" bindtap="applyFilters">应用筛选</button>
+    </view>
+  </view>
+
+  <!-- 课程统计 -->
+  <view class="course-stats" wx:if="{{pagination.total > 0}}">
+    <text class="stats-text">共找到 {{pagination.total}} 门课程</text>
+    <text class="stats-text" wx:if="{{userInfo}}">
+      积分余额: {{userInfo.credits}}
+    </text>
+  </view>
+
+  <!-- 加载中状态 -->
+  <view class="loading-container" wx:if="{{isLoading && courseList.length === 0}}">
+    <view class="loading-icon">⏳</view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!isLoading && courseList.length === 0}}">
+    <view class="empty-icon">📚</view>
+    <text class="empty-title">{{searchKeyword ? '未找到相关课程' : '暂无课程'}}</text>
+    <text class="empty-desc">{{searchKeyword ? '试试其他关键词' : '点击下方按钮创建第一个课程'}}</text>
+    <button class="create-btn" bindtap="createCourse" wx:if="{{!searchKeyword}}">
+      创建课程
+    </button>
+  </view>
+
+  <!-- 课程列表 -->
+  <view class="course-list" wx:if="{{courseList.length > 0}}">
+    <view 
+      class="course-card"
+      wx:for="{{courseList}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      data-title="{{item.title}}"
+      bindtap="viewCourse"
+    >
+      <!-- 标题区域 -->
+      <view class="title-section">
+        <text class="course-title">{{item.title}}</text>
+        <view class="course-status status-{{item.status}}">
+          {{getStatusText(item.status)}}
+        </view>
+      </view>
+
+      <!-- 链接区域 -->
+      <view class="link-section" wx:if="{{item.source_url}}">
+        <text class="course-link">基于</text>
+        <text class="course-url">{{item.source_url}}</text>
+      </view>
+
+      <!-- 第一行数据：页数和观看数 -->
+      <view class="stats-row-1">
+        <view class="stat-item">
+          <text class="stat-icon">📄</text>
+          <text class="stat-number">{{item.slides_count || 0}}</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-icon">👁</text>
+          <text class="stat-number">{{item.view_count || 0}}</text>
+        </view>
+      </view>
+
+
+
+      <!-- 时间区域 -->
+      <view class="time-section">
+        <text class="time-item">创建于 {{formatTime(item.created_at) || '未知时间'}}</text>
+        <text class="time-item" wx:if="{{item.updated_at && item.updated_at !== item.created_at}}">
+          更新于 {{formatTime(item.updated_at) || '未知时间'}}
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{hasMore && !isLoading}}">
+    <button class="load-more-btn" bindtap="loadMoreCourses" disabled="{{isLoadingMore}}">
+      {{isLoadingMore ? '加载中...' : '加载更多'}}
+    </button>
+  </view>
+
+  <!-- 没有更多数据 -->
+  <view class="no-more" wx:if="{{!hasMore && courseList.length > 0}}">
+    <text class="no-more-text">没有更多课程了</text>
+  </view>
+
+  <!-- 创建课程按钮 -->
+  <view class="fab-container">
+    <button class="fab-btn" bindtap="createCourse">
+      <text class="fab-icon">+</text>
+    </button>
+  </view>
+  </view> <!-- 关闭 container -->
+</view> <!-- 关闭 page-container -->

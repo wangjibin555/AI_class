@@ -1,0 +1,367 @@
+2025/08/05 00:00:17 ✅ 成功读取配置文件: /Users/mac/Desktop/AI课堂/backend/configs/config.yaml
+2025/08/05 00:00:17 🔍 配置文件中coze配置存在: true
+2025/08/05 00:00:17 开始数据库迁移...
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.127ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[3.339ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[3.010ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'ai_classroom' AND table_name = 'users' AND table_type = 'BASE TABLE'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.303ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.727ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.297ms] [34;1m[rows:-][0m SELECT * FROM `users` LIMIT 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[2.193ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'ai_classroom' AND table_name = 'users' ORDER BY ORDINAL_POSITION
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.143ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.948ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[1.145ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'ai_classroom' AND table_name = 'users' AND index_name = 'idx_users_open_id'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.164ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.618ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[1.136ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'ai_classroom' AND table_name = 'courses' AND table_type = 'BASE TABLE'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.111ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.386ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.425ms] [34;1m[rows:-][0m SELECT * FROM `courses` LIMIT 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[1.857ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'ai_classroom' AND table_name = 'courses' ORDER BY ORDINAL_POSITION
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[11.901ms] [34;1m[rows:0][0m ALTER TABLE `courses` MODIFY COLUMN `is_public` boolean DEFAULT false COMMENT '是否公开'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.245ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.573ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.700ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'ai_classroom' AND table_name = 'courses' AND index_name = 'idx_courses_user_id'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.115ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.366ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.463ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'ai_classroom' AND table_name = 'slides' AND table_type = 'BASE TABLE'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.057ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.243ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.571ms] [34;1m[rows:-][0m SELECT * FROM `slides` LIMIT 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.706ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'ai_classroom' AND table_name = 'slides' ORDER BY ORDINAL_POSITION
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.316ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.338ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.472ms] [34;1m[rows:-][0m SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'ai_classroom' AND table_name = 'slides' AND constraint_name = 'fk_courses_slides'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.063ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.280ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.382ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'ai_classroom' AND table_name = 'slides' AND index_name = 'idx_slides_course_id'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.060ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.225ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.604ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'ai_classroom' AND table_name = 'learning_records' AND table_type = 'BASE TABLE'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.081ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.296ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.225ms] [34;1m[rows:-][0m SELECT * FROM `learning_records` LIMIT 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.521ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'ai_classroom' AND table_name = 'learning_records' ORDER BY ORDINAL_POSITION
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[3.150ms] [34;1m[rows:0][0m ALTER TABLE `learning_records` MODIFY COLUMN `progress` double DEFAULT 0 COMMENT '学习进度百分比'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[3.301ms] [34;1m[rows:0][0m ALTER TABLE `learning_records` MODIFY COLUMN `complete_rate` double DEFAULT 0 COMMENT '完成百分比'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[2.350ms] [34;1m[rows:0][0m ALTER TABLE `learning_records` MODIFY COLUMN `is_completed` boolean DEFAULT false COMMENT '是否完成学习'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[2.114ms] [34;1m[rows:0][0m ALTER TABLE `learning_records` MODIFY COLUMN `is_bookmarked` boolean DEFAULT false COMMENT '是否收藏'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.137ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.442ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.472ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'ai_classroom' AND table_name = 'learning_records' AND index_name = 'idx_learning_records_user_id'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.084ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.286ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.390ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'ai_classroom' AND table_name = 'learning_records' AND index_name = 'idx_learning_records_course_id'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.068ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.216ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.409ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'ai_classroom' AND table_name = 'ai_assistant_chats' AND table_type = 'BASE TABLE'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.071ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.278ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.158ms] [34;1m[rows:-][0m SELECT * FROM `ai_assistant_chats` LIMIT 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.508ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'ai_classroom' AND table_name = 'ai_assistant_chats' ORDER BY ORDINAL_POSITION
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.075ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.236ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.368ms] [34;1m[rows:-][0m SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'ai_classroom' AND table_name = 'ai_assistant_chats' AND constraint_name = 'fk_ai_assistant_chats_user'
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.061ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.212ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'ai_classroom%' ORDER BY SCHEMA_NAME='ai_classroom' DESC,SCHEMA_NAME limit 1
+
+2025/08/05 00:00:17 [32m/Users/mac/Desktop/AI课堂/backend/internal/database/database.go:86
+[0m[33m[0.340ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'ai_classroom' AND table_name = 'ai_assistant_chats' AND index_name = 'idx_ai_assistant_chats_user_id'
+2025/08/05 00:00:17 数据库迁移完成
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ppt/*filepath            --> github.com/gin-gonic/gin.(*RouterGroup).createStaticHandler.func1 (4 handlers)
+[GIN-debug] HEAD   /ppt/*filepath            --> github.com/gin-gonic/gin.(*RouterGroup).createStaticHandler.func1 (4 handlers)
+[GIN-debug] GET    /audio/*filepath          --> github.com/gin-gonic/gin.(*RouterGroup).createStaticHandler.func1 (4 handlers)
+[GIN-debug] HEAD   /audio/*filepath          --> github.com/gin-gonic/gin.(*RouterGroup).createStaticHandler.func1 (4 handlers)
+2025/08/05 00:00:17 ✅ AI客户端初始化成功，使用真实API模型: qwen-turbo
+2025/08/05 00:00:17 📝 API Key状态: sk-969bb...9229
+TTS-Client2025/08/05 00:00:17.326546 设置最大重试次数: 3
+TTS-Client2025/08/05 00:00:17.326549 设置重试延迟: 2s
+TTS-Client2025/08/05 00:00:17.326556 设置日志级别，debug: true
+2025/08/05 00:00:17 ✅ 从配置文件加载Coze配置: APIBase=https://api.coze.cn, Token长度=68
+2025/08/05 00:00:17 ✅ Coze服务初始化完成
+2025/08/05 00:00:17 ✅ 练习生成服务初始化完成
+2025/08/05 00:00:17 任务管理器启动
+2025/08/05 00:00:17 ✅ AI内容处理器初始化完成: true
+2025/08/05 00:00:17 ✅ Coze处理器初始化完成
+2025/08/05 00:00:17 ✅ 练习生成处理器初始化完成
+2025/08/05 00:00:17 ✅ .tmp文件HTML转换处理器初始化完成
+2025/08/05 00:00:17 🔍 开始注册路由，AI内容处理器: true
+2025/08/05 00:00:17 setupRoutes called
+[GIN-debug] POST   /api/v1/auth/wechat       --> ai-classroom/internal/handlers.(*AuthHandler).WechatLogin-fm (4 handlers)
+[GIN-debug] POST   /api/v1/auth/refresh      --> ai-classroom/internal/handlers.(*AuthHandler).RefreshToken-fm (4 handlers)
+[GIN-debug] GET    /api/v1/auth/validate     --> ai-classroom/internal/handlers.(*AuthHandler).ValidateToken-fm (4 handlers)
+[GIN-debug] POST   /api/v1/auth/logout       --> ai-classroom/internal/handlers.(*AuthHandler).Logout-fm (5 handlers)
+[GIN-debug] GET    /api/v1/auth/profile      --> ai-classroom/internal/handlers.(*AuthHandler).GetProfile-fm (5 handlers)
+[GIN-debug] PUT    /api/v1/auth/profile      --> ai-classroom/internal/handlers.(*AuthHandler).UpdateProfile-fm (5 handlers)
+[GIN-debug] GET    /api/v1/auth/vip          --> ai-classroom/internal/handlers.(*AuthHandler).GetVIPStatus-fm (5 handlers)
+[GIN-debug] GET    /api/v1/auth/credits      --> ai-classroom/internal/handlers.(*AuthHandler).GetCredits-fm (5 handlers)
+[GIN-debug] POST   /api/v1/auth/credits/consume --> ai-classroom/internal/handlers.(*AuthHandler).ConsumeCredits-fm (5 handlers)
+[GIN-debug] GET    /api/v1/auth/users/:id    --> ai-classroom/internal/handlers.(*AuthHandler).GetUserByID-fm (5 handlers)
+[GIN-debug] GET    /api/v1/users/profile     --> ai-classroom/internal/handlers.(*UserHandler).GetProfile-fm (5 handlers)
+[GIN-debug] PUT    /api/v1/users/profile     --> ai-classroom/internal/handlers.(*UserHandler).UpdateProfile-fm (5 handlers)
+[GIN-debug] GET    /api/v1/users/stats       --> ai-classroom/internal/handlers.(*UserHandler).GetStats-fm (5 handlers)
+[GIN-debug] GET    /api/v1/users/usage       --> ai-classroom/internal/handlers.(*UserHandler).GetUsage-fm (5 handlers)
+[GIN-debug] POST   /api/v1/users/credits/consume --> ai-classroom/internal/handlers.(*UserHandler).ConsumeCredits-fm (5 handlers)
+[GIN-debug] POST   /api/v1/users/credits/add --> ai-classroom/internal/handlers.(*UserHandler).AddCredits-fm (5 handlers)
+[GIN-debug] GET    /api/v1/users/:id         --> ai-classroom/internal/handlers.(*UserHandler).GetUserInfo-fm (5 handlers)
+[GIN-debug] PUT    /api/v1/users/:id/vip     --> ai-classroom/internal/handlers.(*UserHandler).UpdateUserVIP-fm (5 handlers)
+[GIN-debug] GET    /api/v1/content/platforms --> ai-classroom/internal/handlers.(*ContentHandler).GetSupportedPlatforms-fm (4 handlers)
+[GIN-debug] GET    /api/v1/content/types     --> ai-classroom/internal/handlers.(*ContentHandler).GetContentTypes-fm (4 handlers)
+[GIN-debug] POST   /api/v1/content/validate-url --> ai-classroom/internal/handlers.(*ContentHandler).ValidateURL-fm (4 handlers)
+[GIN-debug] POST   /api/v1/content/test-tts  --> main.setupRoutes.func1 (4 handlers)
+[GIN-debug] POST   /api/v1/content/extract   --> ai-classroom/internal/handlers.(*ContentHandler).ExtractWebContent-fm (5 handlers)
+[GIN-debug] POST   /api/v1/content/text      --> ai-classroom/internal/handlers.(*ContentHandler).ProcessTextContent-fm (5 handlers)
+[GIN-debug] POST   /api/v1/content/upload    --> ai-classroom/internal/handlers.(*ContentHandler).UploadDocument-fm (5 handlers)
+[GIN-debug] POST   /api/v1/content/batch     --> ai-classroom/internal/handlers.(*ContentHandler).BatchProcessContent-fm (5 handlers)
+[GIN-debug] GET    /api/v1/content/preview/:id --> ai-classroom/internal/handlers.(*ContentHandler).PreviewContent-fm (5 handlers)
+[GIN-debug] GET    /api/v1/content/stats     --> ai-classroom/internal/handlers.(*ContentHandler).GetProcessStats-fm (5 handlers)
+[GIN-debug] POST   /api/v1/content/generate  --> ai-classroom/internal/handlers.(*ContentHandler).GenerateCourse-fm (5 handlers)
+[GIN-debug] POST   /api/v1/content/ai-summary --> ai-classroom/internal/handlers.(*ContentHandler).GenerateAISummary-fm (5 handlers)
+[GIN-debug] POST   /api/v1/content/enhanced-ppt --> ai-classroom/internal/handlers.(*ContentHandler).GenerateEnhancedPPT-fm (5 handlers)
+[GIN-debug] POST   /api/v1/content/enhanced-ppt-limits --> ai-classroom/internal/handlers.(*ContentHandler).GenerateEnhancedPPTWithLimits-fm (5 handlers)
+[GIN-debug] GET    /api/v1/content/slide-limits --> ai-classroom/internal/handlers.(*ContentHandler).GetSlideCountLimits-fm (5 handlers)
+[GIN-debug] POST   /api/v1/content/process-file --> ai-classroom/internal/handlers.(*ContentHandler).ProcessFileContent-fm (5 handlers)
+[GIN-debug] GET    /api/v1/content/supported-types --> ai-classroom/internal/handlers.(*ContentHandler).GetSupportedFileTypes-fm (4 handlers)
+[GIN-debug] GET    /api/v1/content/audio-progress/:courseId --> ai-classroom/internal/handlers.(*ContentHandler).GetAudioProgress-fm (5 handlers)
+[GIN-debug] GET    /api/v1/ppt/templates     --> ai-classroom/internal/handlers.(*PPTGenerationHandler).GetTemplates-fm (4 handlers)
+[GIN-debug] POST   /api/v1/ppt/validate-url  --> ai-classroom/internal/handlers.(*PPTGenerationHandler).ValidateURL-fm (4 handlers)
+[GIN-debug] POST   /api/v1/ppt/generate      --> ai-classroom/internal/handlers.(*PPTGenerationHandler).GeneratePPT-fm (5 handlers)
+[GIN-debug] GET    /api/v1/ppt/status/:id    --> ai-classroom/internal/handlers.(*PPTGenerationHandler).GetGenerationStatus-fm (5 handlers)
+[GIN-debug] POST   /api/v1/ppt/upload        --> ai-classroom/internal/handlers.(*PPTGenerationHandler).UploadDocument-fm (5 handlers)
+[GIN-debug] GET    /api/v1/ppt/download/:filename --> ai-classroom/internal/handlers.(*PPTGenerationHandler).DownloadPPT-fm (4 handlers)
+[GIN-debug] GET    /api/v1/ppt/preview/:filename --> ai-classroom/internal/handlers.(*PPTGenerationHandler).PreviewPPT-fm (4 handlers)
+[GIN-debug] GET    /api/v1/ppt/info/:filename --> ai-classroom/internal/handlers.(*PPTGenerationHandler).GetPPTInfo-fm (4 handlers)
+[GIN-debug] GET    /api/v1/ai-assistant/popular-questions --> ai-classroom/internal/handlers.(*ContentHandler).GetPopularQuestions-fm (4 handlers)
+[GIN-debug] GET    /api/v1/ai-assistant/suggested-topics --> ai-classroom/internal/handlers.(*ContentHandler).GetSuggestedTopics-fm (4 handlers)
+[GIN-debug] POST   /api/v1/ai-assistant/chat --> ai-classroom/internal/handlers.(*ContentHandler).AIAssistantChat-fm (5 handlers)
+[GIN-debug] GET    /api/v1/ai-assistant/history --> ai-classroom/internal/handlers.(*ContentHandler).GetAIAssistantHistory-fm (5 handlers)
+[GIN-debug] DELETE /api/v1/ai-assistant/history --> ai-classroom/internal/handlers.(*ContentHandler).ClearAIAssistantHistory-fm (5 handlers)
+[GIN-debug] GET    /api/v1/ai-assistant/stats --> ai-classroom/internal/handlers.(*ContentHandler).GetAIAssistantStats-fm (5 handlers)
+2025/08/05 00:00:17 🔍 测试直接注册AI路由
+[GIN-debug] GET    /api/v1/ai-content-direct-test --> main.setupRoutes.func2 (4 handlers)
+2025/08/05 00:00:17 ✅ 直接AI路由注册完成
+2025/08/05 00:00:17 🔍 注册AI内容路由，处理器状态: true
+[GIN-debug] GET    /api/v1/ai-content/test   --> main.setupRoutes.func3 (4 handlers)
+2025/08/05 00:00:17 ✅ AI内容测试路由注册完成
+[GIN-debug] POST   /api/v1/ai-content/url-analysis --> ai-classroom/internal/handlers.(*AIContentHandler).AIURLAnalysis-fm (5 handlers)
+[GIN-debug] POST   /api/v1/ai-content/generate-ppt --> ai-classroom/internal/handlers.(*AIContentHandler).AIGeneratePPT-fm (5 handlers)
+[GIN-debug] GET    /api/v1/ai-content/analysis-history --> ai-classroom/internal/handlers.(*AIContentHandler).GetAnalysisHistory-fm (5 handlers)
+[GIN-debug] DELETE /api/v1/ai-content/analysis/:id --> ai-classroom/internal/handlers.(*AIContentHandler).DeleteAnalysis-fm (5 handlers)
+[GIN-debug] GET    /api/v1/ai-content/engine-status --> ai-classroom/internal/handlers.(*AIContentHandler).GetEngineStatus-fm (4 handlers)
+2025/08/05 00:00:17 ✅ AI引擎状态路由注册完成
+[GIN-debug] POST   /api/v1/audio/generate/:courseId --> ai-classroom/internal/handlers.(*AudioHandler).GenerateCourseAudio-fm (5 handlers)
+[GIN-debug] GET    /api/v1/audio/status/:courseId --> ai-classroom/internal/handlers.(*AudioHandler).GetAudioStatus-fm (5 handlers)
+[GIN-debug] POST   /api/v1/audio/preview     --> ai-classroom/internal/handlers.(*AudioHandler).PreviewVoice-fm (5 handlers)
+[GIN-debug] POST   /api/v1/learning/start    --> ai-classroom/internal/handlers.(*LearningHandler).StartLearning-fm (5 handlers)
+[GIN-debug] POST   /api/v1/learning/progress --> ai-classroom/internal/handlers.(*LearningHandler).UpdateProgress-fm (5 handlers)
+[GIN-debug] GET    /api/v1/learning/record/:recordId --> ai-classroom/internal/handlers.(*LearningHandler).GetLearningRecord-fm (5 handlers)
+[GIN-debug] GET    /api/v1/learning/course/:courseId --> ai-classroom/internal/handlers.(*LearningHandler).GetCourseLearningRecord-fm (5 handlers)
+[GIN-debug] GET    /api/v1/learning/records  --> ai-classroom/internal/handlers.(*LearningHandler).GetLearningRecords-fm (5 handlers)
+[GIN-debug] POST   /api/v1/learning/end      --> ai-classroom/internal/handlers.(*LearningHandler).EndLearning-fm (5 handlers)
+[GIN-debug] DELETE /api/v1/learning/record/:recordId --> ai-classroom/internal/handlers.(*LearningHandler).DeleteLearningRecord-fm (5 handlers)
+[GIN-debug] GET    /api/v1/learning/stats    --> ai-classroom/internal/handlers.(*LearningHandler).GetLearningStats-fm (5 handlers)
+[GIN-debug] GET    /api/v1/coze/health       --> ai-classroom/internal/handlers.(*CozeHandler).HealthCheck-fm (4 handlers)
+[GIN-debug] POST   /api/v1/coze/generate-ppt --> ai-classroom/internal/handlers.(*CozeHandler).GeneratePPT-fm (4 handlers)
+[GIN-debug] POST   /api/v1/coze/workflow/generate-ppt --> ai-classroom/internal/handlers.(*CozeHandler).GeneratePPTWithWorkflow-fm (4 handlers)
+[GIN-debug] GET    /api/v1/coze/tasks/:task_id/status --> ai-classroom/internal/handlers.(*CozeHandler).GetTaskStatus-fm (4 handlers)
+[GIN-debug] GET    /api/v1/coze/tasks/:task_id/result --> ai-classroom/internal/handlers.(*CozeHandler).GetTaskResult-fm (4 handlers)
+[GIN-debug] DELETE /api/v1/coze/tasks/:task_id --> ai-classroom/internal/handlers.(*CozeHandler).CleanupTask-fm (4 handlers)
+[GIN-debug] GET    /api/v1/coze/tasks        --> ai-classroom/internal/handlers.(*CozeHandler).GetAllTasks-fm (4 handlers)
+[GIN-debug] GET    /api/v1/coze/tasks/:task_id/html-preview --> ai-classroom/internal/handlers.(*CozeHandler).GetTaskHTMLPreview-fm (4 handlers)
+[GIN-debug] POST   /api/v1/coze/process-link --> ai-classroom/internal/handlers.(*CozeHandler).ProcessCozeLink-fm (4 handlers)
+[GIN-debug] GET    /api/v1/coze/validate-url --> ai-classroom/internal/handlers.(*CozeHandler).ValidateURL-fm (4 handlers)
+[GIN-debug] GET    /api/v1/coze/bot-config   --> ai-classroom/internal/handlers.(*CozeHandler).GetBotConfig-fm (4 handlers)
+[GIN-debug] GET    /api/v1/coze/download/:filename --> ai-classroom/internal/handlers.(*CozeHandler).DownloadFile-fm (4 handlers)
+[GIN-debug] GET    /api/v1/ai-engines        --> ai-classroom/internal/handlers.(*CozeHandler).GetAIEngines-fm (4 handlers)
+[GIN-debug] GET    /api/v1/ai-engines/:engine_id/config --> ai-classroom/internal/handlers.(*CozeHandler).GetEngineConfig-fm (4 handlers)
+[GIN-debug] POST   /api/v1/tmp/convert-to-html --> ai-classroom/internal/handlers.(*TMPHTMLHandler).ConvertTMPToHTML-fm (4 handlers)
+[GIN-debug] GET    /api/v1/tmp/html/:taskId  --> ai-classroom/internal/handlers.(*TMPHTMLHandler).GetTMPHTMLPresentation-fm (4 handlers)
+[GIN-debug] GET    /api/v1/tmp/html/:taskId/preview --> ai-classroom/internal/handlers.(*TMPHTMLHandler).PreviewTMPHTMLPresentation-fm (4 handlers)
+[GIN-debug] GET    /api/v1/tmp/html/preview/*filepath --> ai-classroom/internal/handlers.(*TMPHTMLHandler).ServeHTMLFile-fm (4 handlers)
+[GIN-debug] GET    /api/v1/tmp/files         --> ai-classroom/internal/handlers.(*TMPHTMLHandler).ListTMPFiles-fm (4 handlers)
+[GIN-debug] GET    /api/v1/tmp/files/:filename/info --> ai-classroom/internal/handlers.(*TMPHTMLHandler).GetTMPFileInfo-fm (4 handlers)
+[GIN-debug] DELETE /api/v1/tmp/files/:filename --> ai-classroom/internal/handlers.(*TMPHTMLHandler).DeleteTMPFile-fm (4 handlers)
+[GIN-debug] GET    /api/v1/tmp/conversion/:taskId/status --> ai-classroom/internal/handlers.(*TMPHTMLHandler).GetConversionStatus-fm (4 handlers)
+[GIN-debug] GET    /api/v1/tmp/conversion/:taskId/progress --> ai-classroom/internal/handlers.(*TMPHTMLHandler).GetConversionProgress-fm (4 handlers)
+[GIN-debug] GET    /api/v1/tmp/resources/:taskId/:filename --> ai-classroom/internal/handlers.(*TMPHTMLHandler).ServeTMPResource-fm (4 handlers)
+[GIN-debug] POST   /api/v1/tmp/process/:taskId --> ai-classroom/internal/handlers.(*TMPHTMLHandler).ProcessTMPFile-fm (4 handlers)
+[GIN-debug] POST   /api/v1/exercises/generate --> ai-classroom/internal/handlers.(*ExerciseHandler).GenerateExercise-fm (5 handlers)
+[GIN-debug] GET    /api/v1/exercises/generation --> ai-classroom/internal/handlers.(*ExerciseHandler).GetUserGenerationRecords-fm (5 handlers)
+[GIN-debug] GET    /api/v1/exercises/generation/:id --> ai-classroom/internal/handlers.(*ExerciseHandler).GetGenerationRecord-fm (5 handlers)
+[GIN-debug] GET    /api/v1/exercises/generation/:id/status --> ai-classroom/internal/handlers.(*ExerciseHandler).GetGenerationStatus-fm (5 handlers)
+[GIN-debug] GET    /api/v1/ppt-course/preview/:courseId --> ai-classroom/internal/handlers.(*PPTHandler).PreviewPPT-fm (5 handlers)
+[GIN-debug] GET    /api/v1/ppt-course/download/:courseId --> ai-classroom/internal/handlers.(*PPTHandler).DownloadPPT-fm (5 handlers)
+[GIN-debug] POST   /api/v1/ppt-course/generate/:courseId --> ai-classroom/internal/handlers.(*PPTHandler).GeneratePPTFile-fm (5 handlers)
+[GIN-debug] GET    /api/v1/ppt-course/status/:courseId --> ai-classroom/internal/handlers.(*PPTHandler).GetPPTStatus-fm (5 handlers)
+2025/08/05 00:00:17 注册的路由:
+2025/08/05 00:00:17 - GET /api/v1/ai-assistant/popular-questions
+2025/08/05 00:00:17 - GET /api/v1/ai-assistant/suggested-topics
+2025/08/05 00:00:17 - POST /api/v1/ai-assistant/chat
+2025/08/05 00:00:17 - GET /api/v1/ai-assistant/history
+2025/08/05 00:00:17 - DELETE /api/v1/ai-assistant/history
+2025/08/05 00:00:17 - GET /api/v1/ai-assistant/stats
+[GIN-debug] GET    /api/v1/test              --> main.setupRoutes.func4 (4 handlers)
+[GIN-debug] GET    /api/v1/courses           --> ai-classroom/internal/handlers.(*CourseHandler).GetCourses-fm (5 handlers)
+[GIN-debug] POST   /api/v1/courses           --> ai-classroom/internal/handlers.(*CourseHandler).CreateCourse-fm (5 handlers)
+[GIN-debug] POST   /api/v1/courses/upload    --> ai-classroom/internal/handlers.(*CourseHandler).UploadCourse-fm (5 handlers)
+[GIN-debug] GET    /api/v1/courses/search    --> ai-classroom/internal/handlers.(*CourseHandler).SearchCourses-fm (5 handlers)
+[GIN-debug] GET    /api/v1/courses/learning-records --> ai-classroom/internal/handlers.(*CourseHandler).GetLearningRecords-fm (5 handlers)
+[GIN-debug] GET    /api/v1/courses/learning-records/stats --> ai-classroom/internal/handlers.(*CourseHandler).GetLearningStats-fm (5 handlers)
+[GIN-debug] POST   /api/v1/courses/learning-records/:id/reset --> ai-classroom/internal/handlers.(*CourseHandler).ResetLearningProgress-fm (5 handlers)
+[GIN-debug] DELETE /api/v1/courses/learning-records/:id --> ai-classroom/internal/handlers.(*CourseHandler).DeleteLearningRecord-fm (5 handlers)
+[GIN-debug] GET    /api/v1/courses/latest    --> ai-classroom/internal/handlers.(*CourseHandler).GetLatestCourse-fm (5 handlers)
+[GIN-debug] GET    /api/v1/courses/:id/generation-status --> ai-classroom/internal/handlers.(*CourseHandler).GetGenerationStatus-fm (5 handlers)
+[GIN-debug] GET    /api/v1/courses/:id/progress --> ai-classroom/internal/handlers.(*CourseHandler).GetProgress-fm (5 handlers)
+[GIN-debug] PUT    /api/v1/courses/:id/progress --> ai-classroom/internal/handlers.(*CourseHandler).UpdateLearningProgress-fm (5 handlers)
+[GIN-debug] POST   /api/v1/courses/:id/complete --> ai-classroom/internal/handlers.(*CourseHandler).CompleteCourse-fm (5 handlers)
+[GIN-debug] POST   /api/v1/courses/:id/cancel --> ai-classroom/internal/handlers.(*CourseHandler).CancelGeneration-fm (5 handlers)
+[GIN-debug] POST   /api/v1/courses/:id/regenerate --> ai-classroom/internal/handlers.(*CourseHandler).RegenerateCourse-fm (5 handlers)
+[GIN-debug] GET    /api/v1/courses/:id       --> ai-classroom/internal/handlers.(*CourseHandler).GetCourse-fm (5 handlers)
+[GIN-debug] PUT    /api/v1/courses/:id       --> ai-classroom/internal/handlers.(*CourseHandler).UpdateCourse-fm (5 handlers)
+[GIN-debug] DELETE /api/v1/courses/:id       --> ai-classroom/internal/handlers.(*CourseHandler).DeleteCourse-fm (5 handlers)
+[GIN-debug] POST   /api/v1/quiz/generate/:id --> ai-classroom/internal/handlers.(*QuizHandler).GenerateQuiz-fm (5 handlers)
+[GIN-debug] GET    /api/v1/quiz/:id          --> ai-classroom/internal/handlers.(*QuizHandler).GetQuiz-fm (5 handlers)
+[GIN-debug] POST   /api/v1/quiz/:id/start    --> ai-classroom/internal/handlers.(*QuizHandler).StartQuiz-fm (5 handlers)
+[GIN-debug] GET    /api/v1/quiz/:id/stats    --> ai-classroom/internal/handlers.(*QuizHandler).GetQuizStats-fm (5 handlers)
+[GIN-debug] POST   /api/v1/quiz/attempts/:id/answer --> ai-classroom/internal/handlers.(*QuizHandler).SubmitAnswer-fm (5 handlers)
+[GIN-debug] POST   /api/v1/quiz/attempts/:id/submit --> ai-classroom/internal/handlers.(*QuizHandler).SubmitQuiz-fm (5 handlers)
+[GIN-debug] GET    /api/v1/quiz/attempts/:id --> ai-classroom/internal/handlers.(*QuizHandler).GetAttempt-fm (5 handlers)
+[GIN-debug] GET    /ws                       --> main.setupRoutes.HandleWebSocket.func68 (4 handlers)
+[GIN-debug] GET    /ws/generation/:id        --> main.setupRoutes.HandleGenerationWebSocket.func69 (4 handlers)
+[GIN-debug] GET    /api/v1/health            --> main.setupRoutes.func5 (4 handlers)
+2025/08/05 00:00:17 🚀 生产模式：HTTPS服务器启动在 https://0.0.0.0:3001
+[GIN-debug] Listening and serving HTTPS on :3001
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] [ERROR] listen tcp :3001: bind: address already in use
+2025/08/05 00:00:17 listen tcp :3001: bind: address already in use

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PPT演示文稿</title>
+    
+    <!-- League Spartan字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/white.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "League Spartan", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .reveal {
+            background: transparent;
+        }
+        
+        .reveal .slides {
+            background: transparent;
+        }
+        
+        .reveal .slides section {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(25, 118, 210, 0.15);
+            margin: 20px;
+            border: 1px solid rgba(25, 118, 210, 0.1);
+        }
+        
+        .reveal .slides section h1 {
+            font-size: 38px;
+            font-weight: 700;
+            color: #1976d2;
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+        
+        .reveal .slides section h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 25px;
+            letter-spacing: 0.3px;
+            line-height: 1.3;
+        }
+        
+        .reveal .slides section p, 
+        .reveal .slides section div,
+        .reveal .slides section li {
+            font-size: 20px;
+            font-weight: 400;
+            color: #424242;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            letter-spacing: 0.2px;
+        }
+        
+        .reveal .slides section ul, 
+        .reveal .slides section ol {
+            text-align: left;
+            margin: 0 auto;
+            max-width: 80%;
+        }
+        
+        .reveal .slides section img {
+            border: none;
+            box-shadow: 0 4px 20px rgba(25, 118, 210, 0.2);
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 70vh;
+            object-fit: contain;
+            margin: 20px 0;
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            .reveal .slides section {
+                padding: 30px 20px;
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .reveal .slides section h1 {
+                font-size: 28px;
+            }
+            
+            .reveal .slides section h2 {
+                font-size: 22px;
+            }
+            
+            .reveal .slides section p,
+            .reveal .slides section div,
+            .reveal .slides section li {
+                font-size: 18px;
+            }
+        }
+        
+        .custom-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 1000;
+            display: flex;
+            gap: 12px;
+            flex-direction: column;
+        }
+        
+        .custom-controls button {
+            background: linear-gradient(135deg, #1976d2, #1565c0);
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 48px;
+            height: 48px;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .custom-controls button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .custom-controls {
+                bottom: 20px;
+                left: 20px;
+                gap: 10px;
+            }
+            
+            .custom-controls button {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+        
+        /* 进度条和控制按钮样式 */
+        .reveal .progress {
+            background: rgba(25, 118, 210, 0.2);
+        }
+        
+        .reveal .progress span {
+            background: #1976d2;
+        }
+        
+        .reveal .controls {
+            color: #1976d2;
+        }
+        
+        .reveal .controls button {
+            background: rgba(25, 118, 210, 0.1);
+        }
+        
+        /* 触摸手势优化 */
+        .reveal .slides {
+            touch-action: pan-y;
+        }
+        
+        /* 动画效果 */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .reveal .slides section {
+            animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section id="slide-1">
+                <div><h2>Redis高级特性解析</h2></div>
+            </section>
+            <section id="slide-2">
+                <div><h2>开场介绍</h2></div>
+                <div><div class='content-list'><p>• Redis的地位与应用：强调Redis在数据库领域作为高性能键值存储系统的关键地位，列举其在缓存、消息队列等众多场景的广泛应用，引发听众兴趣。</p><p>• 汇报主题概述：点明本次聚焦“Redis实战（7）-- 高级特性Redis Stream数据结构与基础命令”，阐述Redis Stream作为高级特性，对拓展Redis功能和解决复杂问题的重要意义。</p></div></div>
+            </section>
+            <section id="slide-3">
+                <div><h2>Redis stream数据结构解析</h2></div>
+                <div><div class='content-list'><p>• 消息ID形式与含义：详细讲解Redis stream中消息ID的格式，如时间戳与序列号组合形式，说明其含义及在消息标识中的作用，强调*在自动生成消息ID时的便利与规则。</p><p>• 消费组关系与游标：阐述Stream与消费组的关联，解释消费组游标last_delivered_id随消息消费的移动原理，以及该游标对记录消费进度和保证消息有序处理的作用。</p><p>• 消费组创建要点：说明消费组创建方式，如XGROUP CREATE命令的使用，强调创建时的注意事项，如组名唯一性，阐述消费组独立性及消息消费不重复等特点。</p></div></div>
+            </section>
+            <section id="slide-4">
+                <div><h2>命令端操作讲解 - 生产者端</h2></div>
+                <div><div class='content-list'><p>• 命令功能与语法：依次介绍xadd（追加消息）、xrange（获取消息队列）、xlen（获取Stream长度）、del（删除键）、xdel（删除Stream中的消息）等命令的功能、语法格式及适用场景。</p><p>• 实际操作举例：通过具体代码示例，展示如何使用xadd追加消息、xrange按条件获取消息、xlen查看队列长度、del删除Stream等操作，让听众了解命令实际用法。</p></div></div>
+            </section>
+            <section id="slide-5">
+                <div><h2>命令端操作讲解 - 消费端 - 单消费者</h2></div>
+                <div><div class='content-list'><p>• xread命令用法：介绍xread命令在单消费者模式下读取指定消息ID后消息的方法，以及如何通过阻塞参数实现阻塞读取，确保及时获取新消息。</p><p>• 记录消费位置：强调单消费者顺序消费时，记录消费位置的重要性，以避免消息遗漏或重复消费，保证数据处理的准确性。</p></div></div>
+            </section>
+            <section id="slide-6">
+                <div><h2>命令端操作讲解 - 消费端 - 消费群</h2></div>
+                <div><div class='content-list'><p>• 群组消费目的：回答“为什么会用到群组”问题，解释Redis群组消费在提高消费效率、实现消息分摊、确保消息可靠处理等方面的目的和优势。</p><p>• 命令及原理：依次讲解消费组创建（XGROUP CREATE）、查看状态（如XGROUP INFO）、消费者消费（XREADGROUP）和确认（XGROUP ACK）等操作的命令及原理。</p><p>• 示例展示：结合实际案例，展示上述命令在消费群场景中的使用，如创建消费组、消费者从组中获取消息并确认处理等操作及效果。</p></div></div>
+            </section>
+            <section id="slide-7">
+                <div><h2>相关案例展示</h2></div>
+                <div><div class='content-list'><p>• 消息队列案例：以具体业务场景为例，展示如何利用Redis Stream实现消息队列，分析其实现思路，如消息生产与消费流程、如何保证消息不丢失等，阐述相比传统队列的优势。</p><p>• 日志记录案例：讲解在日志记录场景中Redis Stream的应用，说明如何将日志信息作为消息写入Stream，以及后续如何查询和分析日志，突出其在日志管理上的便利性和高效性。</p></div></div>
+            </section>
+            <section id="slide-8">
+                <div><h2>对比与拓展</h2></div>
+                <div><div class='content-list'><p>• 与其他数据结构对比：将Redis Stream与Redis其他常见数据结构（如List、Hash等）进行简单对比，从存储结构、操作命令、适用场景等方面分析，突出Stream在消息处理方面的独特特点。</p><p>• 应用领域拓展：提及Redis Stream在不同领域的应用拓展，如电商系统的订单处理、金融系统的交易流水记录等，展现其广阔的应用前景和潜力。</p></div></div>
+            </section>
+            <section id="slide-9">
+                <div><h2>总结回顾</h2></div>
+                <div><div class='content-list'><p>• 关键要点总结：总结Redis Stream数据结构的核心要点，如消息ID、消费组、游标等概念，回顾基础命令的功能、语法和使用场景。</p><p>• 知识重要性强调：强调掌握Redis Stream知识对深入理解Redis功能、提升开发效率、解决复杂业务问题的重要性，鼓励听众进一步探索应用。</p></div></div>
+            </section>
+            <section id="slide-10">
+                <div><h2>互动环节</h2></div>
+                <div><div class='content-list'><p>• 问答交流：鼓励听众提出关于Redis Stream数据结构、命令使用、案例实现等方面的疑问，进行现场解答和交流。</p><p>• 讨论分享：组织听众就Redis Stream在实际项目中的应用难点、优化方向等展开讨论，分享各自的见解和经验，共同探讨技术问题。</p></div></div>
+            </section>
+        </div>
+    </div>
+    
+    <div class="custom-controls">
+        <button onclick="previewPresentation()" title="预览">👁️</button>
+        <button onclick="copyPresentationLink()" title="复制链接">🔗</button>
+        <button onclick="Reveal.toggleFullscreen()" title="全屏">🔍</button>
+        <button onclick="sharePresentation()" title="分享">📤</button>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            transition: 'slide',
+            transitionSpeed: 'fast',
+            controls: true,
+            progress: true,
+            center: true,
+            touch: true,
+            keyboard: true,
+            mouseWheel: true,
+            // 移动端优化配置
+            embedded: false,
+            autoSlide: 0,
+            autoSlideStoppable: true,
+            // 手势配置
+            touchSensitivity: 15,
+            // 视差背景
+            parallaxBackgroundImage: '',
+            parallaxBackgroundSize: '',
+            // 响应式字体
+            width: '100%%',
+            height: '100%%',
+            margin: 0.04,
+            minScale: 0.2,
+            maxScale: 2.0,
+            // 插件
+            plugins: []
+        });
+        
+        // 移动端手势增强
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        });
+        
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleGesture();
+        });
+        
+        function handleGesture() {
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            const minSwipeDistance = 50;
+            
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                // 水平滑动
+                if (Math.abs(deltaX) > minSwipeDistance) {
+                    if (deltaX > 0) {
+                        Reveal.prev(); // 右滑：上一页
+                    } else {
+                        Reveal.next(); // 左滑：下一页
+                    }
+                }
+            } else {
+                // 垂直滑动
+                if (Math.abs(deltaY) > minSwipeDistance) {
+                    if (deltaY > 0) {
+                        Reveal.up(); // 下滑：向上
+                    } else {
+                        Reveal.down(); // 上滑：向下
+                    }
+                }
+            }
+        }
+        
+        // 双击全屏
+        let lastTap = 0;
+        document.addEventListener('touchend', function(e) {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            if (tapLength < 500 && tapLength > 0) {
+                if (Reveal.isFullscreen()) {
+                    Reveal.toggleFullscreen();
+                } else {
+                    Reveal.toggleFullscreen();
+                }
+            }
+            lastTap = currentTime;
+        });
+        
+        // 预览功能
+        function previewPresentation() {
+            const currentSlide = Reveal.getCurrentSlide();
+            const slideIndex = Reveal.getIndices().h + 1;
+            const totalSlides = Reveal.getTotalSlides();
+            
+            showToast('预览第 ' + slideIndex + ' 页，共 ' + totalSlides + ' 页');
+            
+            // 可以在这里添加预览相关的逻辑
+            // 比如显示幻灯片缩略图或预览窗口
+        }
+        
+        // 复制链接功能
+        function copyPresentationLink() {
+            const url = window.location.href;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('演示链接已复制到剪贴板');
+                }).catch(err => {
+                    console.log('复制失败:', err);
+                    fallbackCopyTextToClipboard(url);
+                });
+            } else {
+                fallbackCopyTextToClipboard(url);
+            }
+        }
+        
+        // 备用复制方法
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast('演示链接已复制到剪贴板');
+                } else {
+                    showToast('复制失败，请手动复制链接');
+                }
+            } catch (err) {
+                console.log('复制失败:', err);
+                showToast('复制失败，请手动复制链接');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        // 分享功能增强
+        function sharePresentation() {
+            const title = document.title || 'PPT演示文稿';
+            const url = window.location.href;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    url: url,
+                    text: '查看这个精彩的PPT演示'
+                }).catch(err => console.log('分享失败:', err));
+            } else {
+                copyPresentationLink();
+            }
+        }
+        
+        // 简单的Toast提示
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.position = 'fixed';
+            toast.style.top = '50%%';
+            toast.style.left = '50%%';
+            toast.style.transform = 'translate(-50%%, -50%%)';
+            toast.style.background = 'rgba(25, 118, 210, 0.9)';
+            toast.style.color = 'white';
+            toast.style.padding = '12px 24px';
+            toast.style.borderRadius = '8px';
+            toast.style.fontSize = '16px';
+            toast.style.zIndex = '10000';
+            toast.style.backdropFilter = 'blur(10px)';
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+        
+        // 自适应字体大小
+        function adjustFontSize() {
+            const sections = document.querySelectorAll('.reveal .slides section');
+            const viewportWidth = window.innerWidth;
+            
+            sections.forEach(section => {
+                if (viewportWidth < 768) {
+                    section.style.fontSize = '0.8em';
+                } else if (viewportWidth < 1024) {
+                    section.style.fontSize = '0.9em';
+                } else {
+                    section.style.fontSize = '1em';
+                }
+            });
+        }
+        
+        // 窗口大小改变时调整字体
+        window.addEventListener('resize', adjustFontSize);
+        window.addEventListener('orientationchange', adjustFontSize);
+        
+        // 初始化时调整字体
+        document.addEventListener('DOMContentLoaded', adjustFontSize);
+    </script>
+</body>
+</html>

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>是的</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .presentation {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .slide {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            margin: 40px 0;
+            padding: 50px;
+            min-height: 600px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .slide:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+        }
+        
+        .slide-header {
+            border-bottom: 3px solid #f8f9fa;
+            padding-bottom: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .slide-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .slide-title {
+            font-size: 2.8em;
+            color: #2c3e50;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .slide.title-slide .slide-title {
+            font-size: 4em;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+        }
+        
+        .slide-content {
+            font-size: 1.3em;
+            line-height: 1.8;
+            color: #34495e;
+        }
+        
+        .slide-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 30px 0;
+        }
+        
+        .slide-content li {
+            margin: 20px 0;
+            padding: 15px 0 15px 50px;
+            position: relative;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .slide-content li:hover {
+            color: #667eea;
+            transform: translateX(10px);
+        }
+
+        .slide-content li::before {
+            content: '▶';
+            color: #667eea;
+            position: absolute;
+            left: 0;
+            top: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .keywords {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 6px solid #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .keywords-title {
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #667eea;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+        }
+
+        .keywords-title::before {
+            content: '🏷️';
+            margin-right: 10px;
+        }
+        
+        .keyword-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.9em;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .keyword-tag:hover {
+            transform: translateY(-2px);
+        }
+        
+        .slide-notes {
+            background: linear-gradient(135deg, #fff9c4, #fffacd);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 6px solid #ffc107;
+            font-style: italic;
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.1);
+        }
+
+        .slide-notes::before {
+            content: '💡 ';
+            font-style: normal;
+            font-weight: bold;
+        }
+        
+        .metadata {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1em;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            margin: 40px 0;
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            z-index: 1000;
+            transition: width 0.3s ease;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .presentation { padding: 10px; }
+            .slide { padding: 30px 20px; margin: 20px 0; }
+            .slide-title { font-size: 2em; }
+            .slide.title-slide .slide-title { font-size: 2.5em; }
+        }
+
+        /* 打印样式 */
+        @media print {
+            .slide {
+                page-break-after: always;
+                margin: 0;
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            body { background: white; }
+            .progress-bar { display: none; }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 进度条功能
+            const progressBar = document.querySelector('.progress-bar');
+            const updateProgress = () => {
+                const scrollTop = window.pageYOffset;
+                const docHeight = document.body.scrollHeight - window.innerHeight;
+                const progress = (scrollTop / docHeight) * 100;
+                progressBar.style.width = progress + '%';
+            };
+            
+            window.addEventListener('scroll', updateProgress);
+            
+            // 幻灯片导航
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach((slide, index) => {
+                slide.addEventListener('click', () => {
+                    if (index < slides.length - 1) {
+                        slides[index + 1].scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // 键盘导航
+            let currentSlide = 0;
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    e.preventDefault();
+                    if (currentSlide < slides.length - 1) {
+                        currentSlide++;
+                        slides[currentSlide].scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    if (currentSlide > 0) {
+                        currentSlide--;
+                        slides[currentSlide].scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+            
+            // 幻灯片动画
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '0px 0px -100px 0px'
+            };
+            
+            const slideObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                        currentSlide = Array.from(slides).indexOf(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            slides.forEach(slide => {
+                slide.style.opacity = '0.8';
+                slide.style.transform = 'translateY(20px)';
+                slide.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                slideObserver.observe(slide);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="progress-bar"></div>
+    <div class="presentation">
+        <div class="slide title-slide">
+            <div class="slide-header">
+                <div class="slide-number">第 1 页</div>
+                <h1 class="slide-title">引言：什么是异常处理？</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>异常的定义</li>
+                    <li>异常处理的作用</li>
+                    <li>提升程序稳定性</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">异常</span>
+                <span class="keyword-tag">错误管理</span>
+                <span class="keyword-tag">程序稳定性</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看引言：什么是异常处理？的相关内容。主要包括：异常的定义；异常处理的作用；提升程序稳定性；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 2 页</div>
+                <h1 class="slide-title">Python中的异常分类</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>内置异常类型</li>
+                    <li>用户自定义异常</li>
+                    <li>继承Exception类</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">内置异常</span>
+                <span class="keyword-tag">自定义异常</span>
+                <span class="keyword-tag">Exception类</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看Python中的异常分类的相关内容。主要包括：内置异常类型；用户自定义异常；继承Exception类；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 3 页</div>
+                <h1 class="slide-title">try-except语句结构</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>try块作用</li>
+                    <li>except块功能</li>
+                    <li>异常捕获语法</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">try块</span>
+                <span class="keyword-tag">except块</span>
+                <span class="keyword-tag">异常捕获</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看try-except语句结构的相关内容。主要包括：try块作用；except块功能；异常捕获语法；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 4 页</div>
+                <h1 class="slide-title">多个except块的使用</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>多except块功能</li>
+                    <li>不同异常处理</li>
+                    <li>异常分类捕获</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">多except块</span>
+                <span class="keyword-tag">异常分类</span>
+                <span class="keyword-tag">错误处理</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看多个except块的使用的相关内容。主要包括：多except块功能；不同异常处理；异常分类捕获；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 5 页</div>
+                <h1 class="slide-title">else块的作用</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>else块触发条件</li>
+                    <li>无异常时执行</li>
+                    <li>代码隔离</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">else块</span>
+                <span class="keyword-tag">无异常</span>
+                <span class="keyword-tag">代码执行</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看else块的作用的相关内容。主要包括：else块触发条件；无异常时执行；代码隔离；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 6 页</div>
+                <h1 class="slide-title">finally块的功能</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>finally块特性</li>
+                    <li>资源清理</li>
+                    <li>强制执行</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">finally块</span>
+                <span class="keyword-tag">资源释放</span>
+                <span class="keyword-tag">强制执行</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看finally块的功能的相关内容。主要包括：finally块特性；资源清理；强制执行；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 7 页</div>
+                <h1 class="slide-title">抛出异常（raise）</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>raise语句功能</li>
+                    <li>显式异常触发</li>
+                    <li>数据验证</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">raise语句</span>
+                <span class="keyword-tag">异常触发</span>
+                <span class="keyword-tag">数据校验</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看抛出异常（raise）的相关内容。主要包括：raise语句功能；显式异常触发；数据验证；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 8 页</div>
+                <h1 class="slide-title">自定义异常类</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>自定义异常类</li>
+                    <li>继承Exception</li>
+                    <li>错误信息扩展</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">自定义异常</span>
+                <span class="keyword-tag">Exception类</span>
+                <span class="keyword-tag">错误信息</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看自定义异常类的相关内容。主要包括：自定义异常类；继承Exception；错误信息扩展；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 9 页</div>
+                <h1 class="slide-title">异常处理的最佳实践</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>精确捕获异常</li>
+                    <li>资源释放</li>
+                    <li>提高可读性</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">最佳实践</span>
+                <span class="keyword-tag">异常捕获</span>
+                <span class="keyword-tag">代码可读性</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看异常处理的最佳实践的相关内容。主要包括：精确捕获异常；资源释放；提高可读性；
+            </div>
+                    </div>
+        
+        <div class="slide ">
+            <div class="slide-header">
+                <div class="slide-number">第 10 页</div>
+                <h1 class="slide-title">总结与展望</h1>
+            </div>
+            
+            <div class="slide-content">
+                <ul>
+                    <li>异常处理的重要性</li>
+                    <li>提升程序稳定性</li>
+                    <li>改善用户体验</li>
+                </ul>
+            </div>
+            
+            <div class="keywords">
+                <div class="keywords-title">关键词</div>
+                <span class="keyword-tag">异常处理</span>
+                <span class="keyword-tag">程序稳定性</span>
+                <span class="keyword-tag">用户体验</span>
+                </div>
+            
+            <div class="slide-notes">
+                <strong>备注:</strong> 接下来我们来看总结与展望的相关内容。主要包括：异常处理的重要性；提升程序稳定性；改善用户体验；
+            </div>
+                    </div>
+        
+        <div class="metadata">
+            <p>生成时间: 2025-07-24 12:54:47 | 模板: business | 总页数: 10</p>
+            <p>由 AI课堂 智能生成</p>
+        </div>
+    </div>
+</body>
+</html>
