@@ -1,9 +1,0 @@
-{
-  "navigationBarTitleText": "课程播放器",
-  "navigationBarBackgroundColor": "#667eea",
-  "navigationBarTextStyle": "white",
-  "usingComponents": {
-    "audio-controller": "../../components/audio/audio-controller",
-    "audio-progress": "../../components/audio/audio-progress"
-  }
-}

@@ -1,4 +1,0 @@
-<view class="icon-container icon-{{size}}" style="color: {{color}}" bind:tap="onIconTap">
-  <image wx:if="{{iconPath}}" src="{{iconPath}}" class="icon-image" mode="aspectFit" />
-  <text wx:else class="icon-placeholder">{{name}}</text>
-</view> 
