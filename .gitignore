@@ -1,0 +1,79 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+vendor/
+
+# Environment variables and sensitive configs
+.env
+.env.local
+.env.*.local
+*.secret
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+
+# Configuration files with sensitive data
+shared/config/default.json
+!shared/config/default.json.example
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Build outputs
+dist/
+build/
+*.log
+*.out
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+.DS_Store?
+
+# Test coverage
+coverage/
+*.cover
+.coverage
+
+# Temporary files
+*.tmp
+temp/
+tmp/
+
+# Uploaded files (local dev)
+uploads/
+storage/
+
+# Local test credentials
+*_test_credentials.go
+*_test_secrets.go
+
+# Database dumps
+*.sql
+*.dump
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Go specific
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+
