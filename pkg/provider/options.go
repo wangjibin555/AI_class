@@ -87,6 +87,7 @@ func SetNamespace(namespace string) (Option, error) {
 	}, nil
 }
 
+// 设定环境
 func SetEnvironment(environment string) (Option, error) {
 	if environment == "" {
 		return nil, ErrInvalidEnvironment
@@ -97,6 +98,7 @@ func SetEnvironment(environment string) (Option, error) {
 	}, nil
 }
 
+// 设定区域
 func SetRegion(region string) (Option, error) {
 	if region == "" {
 		return nil, ErrInvalidRegion
@@ -107,6 +109,7 @@ func SetRegion(region string) (Option, error) {
 	}, nil
 }
 
+// 设置超时时间
 func SetTimeout(timeout time.Duration) (Option, error) {
 	if timeout <= 0 {
 		return nil, ErrInvalidTimeout
@@ -117,6 +120,14 @@ func SetTimeout(timeout time.Duration) (Option, error) {
 	}, nil
 }
 
+// 设置是否启用缓存
+func SetEnableCache(enableCache bool) Option {
+	return func(opts *ProviderOptions) {
+		opts.EnableCache = enableCache
+	}
+}
+
+// 设置缓存过期时间
 func SetCacheTTL(cacheTTL time.Duration) (Option, error) {
 	if cacheTTL <= 0 {
 		return nil, ErrInvalidCacheTTL
@@ -127,6 +138,7 @@ func SetCacheTTL(cacheTTL time.Duration) (Option, error) {
 	}, nil
 }
 
+// 设置本地缓存目录
 func SetLocalCacheDir(localCacheDir string) (Option, error) {
 	if localCacheDir == "" {
 		return nil, ErrInvalidLocalCacheDir
@@ -137,6 +149,7 @@ func SetLocalCacheDir(localCacheDir string) (Option, error) {
 	}, nil
 }
 
+// 设置最大重试次数
 func SetMaxRetries(maxRetries int) (Option, error) {
 	if maxRetries <= 0 {
 		return nil, ErrInvalidMaxRetries
@@ -147,6 +160,7 @@ func SetMaxRetries(maxRetries int) (Option, error) {
 	}, nil
 }
 
+// 设置重试时间间隔
 func SetRetryInterval(retryInterval time.Duration) (Option, error) {
 	if retryInterval <= 0 {
 		return nil, ErrInvalidRetryInterval
@@ -157,6 +171,7 @@ func SetRetryInterval(retryInterval time.Duration) (Option, error) {
 	}, nil
 }
 
+// 设置重试退避倍率
 func SetRetryBackoffRate(retryBackoffRate float64) (Option, error) {
 	if retryBackoffRate <= 0 {
 		return nil, ErrInvalidRetryBackoffRate
@@ -167,6 +182,7 @@ func SetRetryBackoffRate(retryBackoffRate float64) (Option, error) {
 	}, nil
 }
 
+// 设置轮询间隔
 func SetPollInterval(pollInterval time.Duration) (Option, error) {
 	if pollInterval <= 0 {
 		return nil, ErrInvalidPollInterval
@@ -177,13 +193,14 @@ func SetPollInterval(pollInterval time.Duration) (Option, error) {
 	}, nil
 }
 
+// 设置监听模式
 func SetWatchMode(watchMode WatchMode) (Option, error) {
 	return func(opts *ProviderOptions) {
 		opts.WatchMode = watchMode
 	}, nil
 }
 
-// 设置加密
+// 设置是否启用加密
 func SetEnableEncryption(enableEncryption bool) (Option, error) {
 	return func(opts *ProviderOptions) {
 		opts.EnableEncryption = enableEncryption
@@ -197,7 +214,7 @@ func SetKMSKeyID(kmsKeyID string) (Option, error) {
 	}, nil
 }
 
-// 监控，设置数据采集
+// 监控，设置是否启用数据采集
 func SetEnableMetrics(enableMetrics bool) (Option, error) {
 	return func(opts *ProviderOptions) {
 		opts.EnableMetrics = enableMetrics
@@ -209,4 +226,45 @@ func SetMetricsPrefix(metricsPrefix string) (Option, error) {
 	return func(opts *ProviderOptions) {
 		opts.MetricsPrefix = metricsPrefix
 	}, nil
+}
+
+//===========便捷选项===========
+
+// 便捷方式启用缓存并且设置TTL
+func WithCache(ttl time.Duration) Option {
+	return func(opts *ProviderOptions) {
+		opts.EnableCache = true
+		opts.CacheTTL = ttl
+	}
+}
+
+// 便捷方式禁用缓存
+func WithoutCache() Option {
+	return func(opts *ProviderOptions) {
+		opts.EnableCache = false
+	}
+}
+
+// 设置重试策略
+func WithRetry(maxRetries int, interval time.Duration) Option {
+	return func(opts *ProviderOptions) {
+		opts.MaxRetries = maxRetries
+		opts.RetryInterval = interval
+	}
+}
+
+// 便捷启动加密并且设置 KM5 key
+func WithEncryption(kmsKeyID string) Option {
+	return func(opts *ProviderOptions) {
+		opts.EnableEncryption = true
+		opts.KMSKeyID = kmsKeyID
+	}
+}
+
+// 启用指标采集并且设置前缀
+func WithMetrics(prefix string) Option {
+	return func(opts *ProviderOptions) {
+		opts.EnableMetrics = true
+		opts.MetricsPrefix = prefix
+	}
 }

@@ -58,3 +58,11 @@ export JWT_SECRET=your_actual_jwt_secret
 | `MINIO_SECRET_KEY` | MinIO Secret Key | `changeme` |
 | `JWT_SECRET` | JWT 签名密钥 | `your-secret-key-change-in-production` |
 
+
+
+
+
+
+
+
+

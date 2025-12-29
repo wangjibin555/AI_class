@@ -19,10 +19,10 @@ const (
 )
 
 var (
-	currentLevel int32          = int32(INFO) // 使用 int32 支持原子操作
-	logger       unsafe.Pointer               // 原子指针，避免锁
+	currentLevel int32          = int32(INFO)
+	logger       unsafe.Pointer // 原子指针，避免锁
 	loggerOnce   sync.Once
-	initMu       sync.Mutex // 只在 Init 时使用，非常少
+	initMu       sync.Mutex
 )
 
 // 初始化默认 logger（如果未初始化）

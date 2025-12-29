@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"doc-to-ppt-system/def"
+	"AI_class/def"
 	"errors"
 	"time"
 )

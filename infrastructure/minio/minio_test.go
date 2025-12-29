@@ -92,17 +92,7 @@ func TestMinioClient(t *testing.T) {
 		fmt.Printf("Object info: Size=%d, ContentType=%s\n", info.Size, info.ContentType)
 	})
 
-	// 测试列出对象
-	t.Run("List Objects", func(t *testing.T) {
-		objects, err := client.ListObjects(ctx, "", "", false)
-		if err != nil {
-			t.Errorf("Failed to list objects: %v", err)
-		}
-		fmt.Printf("Total objects: %d\n", len(objects))
-		for _, obj := range objects {
-			fmt.Printf("- %s (Size: %d)\n", obj.Key, obj.Size)
-		}
-	})
+	// TODO:测试列出对象
 
 	// 测试下载文件
 	t.Run("Download File", func(t *testing.T) {

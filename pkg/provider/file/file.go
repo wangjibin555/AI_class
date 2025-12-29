@@ -1,10 +1,10 @@
 package file
 
 import (
+	"AI_class/pkg/logger"
+	"AI_class/pkg/provider"
 	"context"
 	"crypto/md5"
-	"doc-to-ppt-system/pkg/logger"
-	"doc-to-ppt-system/pkg/provider"
 	"encoding/json"
 	"fmt"
 	"os"
