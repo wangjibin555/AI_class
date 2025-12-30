@@ -1,10 +1,6 @@
 package redis
 
-import (
-	"time"
-
-	"github.com/gomodule/redigo/redis"
-)
+import "github.com/gomodule/redigo/redis"
 
 // GetBytes 获取字节数组值
 func (c *RedisClient) GetBytes(key string) ([]byte, error) {
@@ -14,13 +10,13 @@ func (c *RedisClient) GetBytes(key string) ([]byte, error) {
 }
 
 // SetNX 仅当key不存在时设置值（返回是否设置成功）
-func (c *RedisClient) SetNX(key string, value interface{}, expiration time.Duration) (bool, error) {
+func (c *RedisClient) SetNxEx(key string, value interface{}, expiration int) (bool, error) {
 	conn := c.pool.Get()
 	defer conn.Close()
 
 	if expiration > 0 {
 		// SET key value NX EX seconds
-		reply, err := conn.Do("SET", key, value, "NX", "EX", int(expiration.Seconds()))
+		reply, err := conn.Do("SET", key, value, "NX", "EX", expiration)
 		if err != nil {
 			return false, err
 		}

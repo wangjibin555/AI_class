@@ -159,6 +159,40 @@ func (c *RedisClient) NewPipeline() *RedisPipeline {
 	}
 }
 
+func (c *RedisClient) ScriptLoad(luaScript string) (string, error) {
+	client := c.pool.Get()
+	defer client.Close()
+	val, err := client.Do("script", "load", luaScript)
+	if err == nil {
+		return string(val.([]uint8)), nil
+	}
+	return "", err
+}
+
+func (c *RedisClient) Eval(script string, keys []string, args []interface{}) ([]interface{}, error) {
+	client := c.pool.Get()
+	defer client.Close()
+	vals := append([]interface{}{script, len(keys)})
+	for _, key := range keys {
+		vals = append(vals, key)
+	}
+	vals = append(vals, args...)
+
+	return redis.Values(client.Do("eval", vals...))
+}
+
+func (c *RedisClient) EvalSha(script string, keys []string, args []interface{}) ([]interface{}, error) {
+	client := c.pool.Get()
+	defer client.Close()
+	vals := append([]interface{}{script, len(keys)})
+	for _, key := range keys {
+		vals = append(vals, key)
+	}
+	vals = append(vals, args...)
+
+	return redis.Values(client.Do("evalsha", vals...))
+}
+
 // Send 添加命令到Pipeline（不立即执行）
 func (p *RedisPipeline) Send(commandName string, args ...interface{}) *RedisPipeline {
 	// 如果Pipeline已经执行完毕或已有错误，不再添加命令

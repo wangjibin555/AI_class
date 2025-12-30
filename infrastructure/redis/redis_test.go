@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"AI_class/def"
 	"fmt"
 	"testing"
 	"time"
@@ -30,7 +31,7 @@ func TestRedisOpt(t *testing.T) {
 	name, _ := client.Get("name")
 	fmt.Println(name)
 	client.Incr("counter")
-	client.SetNX("lock:user:123", "locked", 10*time.Second)
+	client.SetNxEx("lock:user:123", "locked", def.MilliSecond)
 
 	// ====== Hash 操作 ======
 	client.HSet("user:1", "name", "Bob")
