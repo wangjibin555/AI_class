@@ -88,7 +88,7 @@ func (l *LockResult) Unlock(redisClient *redis.RedisClient, redisKey string) {
 		//加载脚本
 		script, err = redisClient.ScriptLoad(UnlockScript)
 		if err != nil {
-			unlockOnce = &sync.Once{}
+			unlockOnce = &sync.Once{} //表示加载失败，需要在下次调用时候再次加载，相当于一个false。
 		}
 	})
 
