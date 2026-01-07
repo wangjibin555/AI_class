@@ -45,6 +45,18 @@ func NewMemoryCache(opts ...CacheOption) *MemoryCache {
 	return cache
 }
 
+// 检查是否存在
+func (c *MemoryCache) Exists(ctx context.Context, key string) bool {
+	if err := VaildateCacheKey(key); err != nil {
+		logger.Warn("Invalid cache key: %d", key)
+		return false
+	}
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	_, exists := c.data[key]
+	return exists
+}
+
 // 获取内存缓存条目
 func (c *MemoryCache) Get(ctx context.Context, key string) ([]byte, error) {
 	if err := VaildateCacheKey(key); err != nil {
@@ -78,7 +90,18 @@ func (c *MemoryCache) Get(ctx context.Context, key string) ([]byte, error) {
 	return nil, ErrCacheNotFound
 }
 
-// 设置缓存条目
+func (c *MemoryCache) MGet(cxt context.Context, keys ...string) (map[string][]byte, error) {
+	entries := make(map[string][]byte)
+	for _, key := range keys {
+		value, err := c.Get(cxt, key)
+		if err != nil {
+			return nil, err
+		}
+		entries[key] = value
+	}
+	return entries, nil
+}
+
 func (c *MemoryCache) Set(ctx context.Context, key string, value []byte, ttl time.Duration) error {
 	if err := VaildateCacheKey(key); err != nil {
 		return err
@@ -115,30 +138,202 @@ func (c *MemoryCache) Set(ctx context.Context, key string, value []byte, ttl tim
 	return nil
 }
 
+func (c *MemoryCache) MSet(ctx context.Context, values map[string][]byte, ttl time.Duration) error {
+	for key, value := range values {
+		if err := c.Set(ctx, key, value, ttl); err != nil {
+			logger.Warn("MSet options chancel err")
+			return err
+		}
+	}
+	return nil
+}
+
 // 删除缓存条目
 func (c *MemoryCache) Delete(ctx context.Context, key string) bool {
 	if err := VaildateCacheKey(key); err != nil {
-		logger.Error("Invalid cache key: %d", key)
+		logger.Warn("Invalid cache key: %d", key)
 		return false
 	}
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
 	//校验键是否存在
-	_, exists := c.data[key]
+	entry, exists := c.data[key]
 	if !exists {
-		logger.Error("Cache key not found: %d", key)
+		logger.Warn("Current Key does not exist: %s", key)
 		return false
 	}
 
+	//执行回调
+	if c.opts.OnEvicted != nil {
+		c.opts.OnEvicted(key, c.data[key].Value)
+	}
+	//删除条目
 	delete(c.data, key)
+
+	//更新命名空间统计
+	c.statsMu.Lock()
+	if count, ok := c.stats.NamespaceSize[entry.Namespace]; ok && count > 0 {
+		c.stats.NamespaceSize[entry.Namespace]--
+	}
+	c.statsMu.Unlock()
+
 	c.recordDelete()
 	return true
 }
 
-// 定期清理过期条目
+func (c *MemoryCache) MDelete(ctx context.Context, keys ...string) bool {
+	falseKey := make([]string, 0)
+	for _, key := range keys {
+		if bo := c.Delete(ctx, key); bo == false {
+			falseKey = append(falseKey, key)
+			logger.Warn("Current MDelete key: %s err")
+		}
+	}
 
-// 清理过期条目
+	if len(keys) > len(falseKey) {
+		return false
+	}
+
+	return true
+}
+
+// 获取指定命名空间下的指定key，注意传入的key是短key，注意需要解析CacheEntry内部key才能进行匹配
+func (c *MemoryCache) GetWithNamespace(ctx context.Context, namespace string, keys ...string) (map[string][]byte, error) {
+	// 找到对应MemoryCache下的CacheEntry的对应key看是否匹配keys，然后匹配的进行加入一个数组内，并且进行返回
+	entries := make(map[string][]byte, 0)
+	if namespace == "" {
+		logger.Warn("Memory_cache GetWithNamespace input namespace err")
+		return nil, ErrInvalidNamespace
+	}
+	for fullKey, entry := range c.data {
+		if entry.Namespace != namespace {
+			continue
+		}
+		_, _, shortKey := ParseCacheKey(fullKey)
+
+		// 从传入key中进行查找对应匹配key
+		if len(keys) > 0 {
+			found := false
+			for _, k := range keys {
+				if k == shortKey {
+					found = true
+					break
+				}
+			}
+			if !found {
+				continue
+			}
+		}
+		entries[shortKey] = entry.Value
+	}
+	return entries, nil
+}
+
+// 设置缓存条目内对应data map[string]interface{}，注意当前缓存层内不进行设置或者关心数据来源，只在调用方处进行负责校验
+func (c *MemoryCache) SetWithNamespace(ctx context.Context, namespace string, keys map[string][]byte, ttl time.Duration) error {
+	if namespace == "" {
+		logger.Warn("Memory_cache SetWithNamespace input namespace err")
+		return ErrInvalidNamespace
+	}
+	if err := VaildateTTL(ttl); err != nil {
+		return err
+	}
+
+	for key, value := range keys {
+		fullKey := BuildConfigKey(namespace, key)
+		if err := c.Set(ctx, fullKey, value, ttl); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// 删除命名空间内的对应缓存条目
+func (c *MemoryCache) DeleteWithNamespace(ctx context.Context, namespace string, keys ...string) bool {
+	if namespace == "" {
+		logger.Warn("Memory_cache DeleteWithNamespace input namespace err")
+		return false
+	}
+	//构建fullKey，后在进行查找map删除
+	for _, key := range keys {
+		fullKey := BuildConfigKey(namespace, key)
+		if err := c.Delete(ctx, fullKey); err == false {
+			return err
+		}
+	}
+	return true
+}
+
+func (c *MemoryCache) GetNamespace(ctx context.Context, namespace string) ([]string, error) {
+	if namespace == "" {
+		logger.Warn("Memory_cache GetNamespace input namespace err")
+		return nil, ErrInvalidNamespace
+	}
+	keys := make([]string, 0)
+	for fullKey, entry := range c.data {
+		if entry.Namespace == namespace {
+			keys = append(keys, fullKey)
+		}
+	}
+	return keys, nil
+}
+
+// 注意，检查命名空间是否存在可以快捷在统计信息中进行判断
+func (c *MemoryCache) CreateNamespace(ctx context.Context, namespace string) error {
+	if namespace == "" {
+		logger.Warn("Memory_cache CreateNamespace input namespace err")
+		return ErrInvalidNamespace
+	}
+
+	c.statsMu.Lock()
+	defer c.statsMu.Unlock()
+
+	//检查命名空间是否已存在
+	if _, exists := c.stats.NamespaceSize[namespace]; exists {
+		logger.Warn("Memory_cache CreateNamespace namespace already exists: %s", namespace)
+		return ErrNamespaceExists
+	}
+	//在统计信息中注册命名空间
+	c.stats.NamespaceSize[namespace] = 0
+
+	return nil
+}
+
+func (c *MemoryCache) DeleteNamespace(ctx context.Context, namespace string) error {
+	if namespace == "" {
+		logger.Warn("Memory_cache DeleteNamespace input namespace error")
+		return ErrInvalidNamespace
+	}
+
+	c.statsMu.Lock()
+	defer c.statsMu.Unlock()
+
+	//先进行遍历删除data内缓存
+	keysToDelete := make([]string, 0)
+	for fullKey, entry := range c.data {
+		if entry.Namespace == namespace {
+			keysToDelete = append(keysToDelete, fullKey)
+		}
+	}
+
+	for _, key := range keysToDelete {
+		if c.opts.OnEvicted != nil {
+			c.opts.OnEvicted(key, c.data[key].Value)
+		}
+		delete(c.data, key)
+		c.recordDelete()
+	}
+
+	//然后进行删除统计信息
+	c.statsMu.Lock()
+	delete(c.stats.NamespaceSize, namespace)
+	c.statsMu.Unlock()
+
+	return nil
+}
+
+// 定期清理过期条目
 func (c *MemoryCache) startCleanup() {
 	c.wg.Add(1)
 	go func() {

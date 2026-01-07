@@ -18,6 +18,8 @@ var (
 	ErrCacheClosed      = errors.New("cache: cache is closed")
 	ErrInvalidTTL       = errors.New("cache: invalid TTL")
 	ErrInvalidNamespace = errors.New("cache: invalid namespace")
+	ErrNamespaceExists  = errors.New("cache: namespace no exists")
+	ErrDeletedNamespace = errors.New("cache: delete namespace error")
 )
 
 const (
@@ -49,7 +51,7 @@ const (
 // 针对缓存操作接口
 type Cache interface {
 	BasicOptions
-	PipelineOptions
+	//	PipelineOptions
 	NamespaceOptions
 	TTLOptions
 	MetricsOptions
