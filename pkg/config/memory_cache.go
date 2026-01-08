@@ -3,6 +3,7 @@ package config
 import (
 	"AI_class/pkg/logger"
 	"context"
+	"errors"
 	"sync"
 	"time"
 )
@@ -149,10 +150,10 @@ func (c *MemoryCache) MSet(ctx context.Context, values map[string][]byte, ttl ti
 }
 
 // 删除缓存条目
-func (c *MemoryCache) Delete(ctx context.Context, key string) bool {
+func (c *MemoryCache) Delete(ctx context.Context, key string) error {
 	if err := VaildateCacheKey(key); err != nil {
 		logger.Warn("Invalid cache key: %d", key)
-		return false
+		return ErrInvalidKey
 	}
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -161,7 +162,7 @@ func (c *MemoryCache) Delete(ctx context.Context, key string) bool {
 	entry, exists := c.data[key]
 	if !exists {
 		logger.Warn("Current Key does not exist: %s", key)
-		return false
+		return ErrInvalidKey
 	}
 
 	//执行回调
@@ -179,23 +180,24 @@ func (c *MemoryCache) Delete(ctx context.Context, key string) bool {
 	c.statsMu.Unlock()
 
 	c.recordDelete()
-	return true
+	return nil
 }
 
-func (c *MemoryCache) MDelete(ctx context.Context, keys ...string) bool {
+func (c *MemoryCache) MDelete(ctx context.Context, keys ...string) error {
 	falseKey := make([]string, 0)
 	for _, key := range keys {
-		if bo := c.Delete(ctx, key); bo == false {
+		if err := c.Delete(ctx, key); err != nil {
 			falseKey = append(falseKey, key)
 			logger.Warn("Current MDelete key: %s err")
+			return ErrInvalidKey
 		}
 	}
 
 	if len(keys) > len(falseKey) {
-		return false
+		return errors.New("Cache: MDelete some key error")
 	}
 
-	return true
+	return nil
 }
 
 // 获取指定命名空间下的指定key，注意传入的key是短key，注意需要解析CacheEntry内部key才能进行匹配
@@ -250,22 +252,22 @@ func (c *MemoryCache) SetWithNamespace(ctx context.Context, namespace string, ke
 }
 
 // 删除命名空间内的对应缓存条目
-func (c *MemoryCache) DeleteWithNamespace(ctx context.Context, namespace string, keys ...string) bool {
+func (c *MemoryCache) DeleteWithNamespace(ctx context.Context, namespace string, keys ...string) error {
 	if namespace == "" {
 		logger.Warn("Memory_cache DeleteWithNamespace input namespace err")
-		return false
+		return ErrInvalidNamespace
 	}
 	//构建fullKey，后在进行查找map删除
 	for _, key := range keys {
 		fullKey := BuildConfigKey(namespace, key)
-		if err := c.Delete(ctx, fullKey); err == false {
+		if err := c.Delete(ctx, fullKey); err != nil {
 			return err
 		}
 	}
-	return true
+	return nil
 }
 
-func (c *MemoryCache) GetNamespace(ctx context.Context, namespace string) ([]string, error) {
+func (c *MemoryCache) GetNamespaces(ctx context.Context, namespace string) ([]string, error) {
 	if namespace == "" {
 		logger.Warn("Memory_cache GetNamespace input namespace err")
 		return nil, ErrInvalidNamespace
@@ -277,6 +279,16 @@ func (c *MemoryCache) GetNamespace(ctx context.Context, namespace string) ([]str
 		}
 	}
 	return keys, nil
+}
+
+func (c *MemoryCache) GetAllNamespaces(ctx context.Context) ([]string, error) {
+	c.statsMu.RLock()
+	defer c.statsMu.RUnlock()
+	namespaces := make([]string, 0)
+	for namespace := range c.stats.NamespaceSize {
+		namespaces = append(namespaces, namespace)
+	}
+	return namespaces, nil
 }
 
 // 注意，检查命名空间是否存在可以快捷在统计信息中进行判断
@@ -330,6 +342,79 @@ func (c *MemoryCache) DeleteNamespace(ctx context.Context, namespace string) err
 	delete(c.stats.NamespaceSize, namespace)
 	c.statsMu.Unlock()
 
+	return nil
+}
+
+func (c *MemoryCache) GetTTL(ctx context.Context, key string) (time.Duration, error) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	entry, exists := c.data[key]
+	if !exists {
+		return 0, ErrCacheNotFound
+	}
+
+	//检查是否过期
+	if entry.IsExpired() {
+		return 0, ErrCacheExpired
+	}
+
+	deadline := time.Until(entry.ExpireAt)
+	if deadline < 0 {
+		return 0, ErrCacheNotFound
+	}
+
+	return deadline, nil
+}
+
+func (c *MemoryCache) SetTTL(ctx context.Context, key string, ttl time.Duration) error {
+	if err := VaildateTTL(ttl); err != nil {
+		return err
+	}
+	if err := VaildateCacheKey(key); err != nil {
+		return err
+	}
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	entry, exists := c.data[key]
+	if !exists {
+		return ErrCacheNotFound
+	}
+
+	entry.ExpireAt = time.Now().Add(ttl)
+	entry.TTL = ttl
+	return nil
+}
+
+func (c *MemoryCache) DeleteTTL(ctx context.Context, key string) error {
+	if err := VaildateCacheKey(key); err != nil {
+		return err
+	}
+
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	entry, exists := c.data[key]
+	if !exists {
+		return ErrCacheNotFound
+	}
+	entry.ExpireAt = time.Time{}
+	entry.TTL = 0
+	return nil
+}
+
+func (c *MemoryCache) Size(ctx context.Context) int {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return len(c.data)
+}
+
+func (c *MemoryCache) Clear(ctx context.Context) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.data = make(map[string]*CacheEntry)
+	c.stats.Size = 0
 	return nil
 }
 

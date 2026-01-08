@@ -62,7 +62,7 @@ type BasicOptions interface {
 	Get(ctx context.Context, key string) ([]byte, error)
 	Set(ctx context.Context, key string, value []byte, ttl time.Duration) error
 	Delete(ctx context.Context, key string) error
-	Exists(ctx context.Context, key string) (bool, error)
+	Exists(ctx context.Context, key string) bool
 }
 
 type PipelineOptions interface {
@@ -78,8 +78,10 @@ type NamespaceOptions interface {
 	SetWithNamespace(ctx context.Context, namespace string, keys map[string][]byte, ttl time.Duration) error
 	//删除命名空间内对应键
 	DeleteWithNamespace(ctx context.Context, namespace string, keys ...string) error
-	//获取命名空间列表
-	GetNamespaces(ctx context.Context) ([]string, error)
+	//获取命名空间下的键列表
+	GetNamespaces(ctx context.Context, namespace string) ([]string, error)
+	//获取全部命名空间
+	GetAllNamespaces(ctx context.Context) ([]string, error)
 	//创建命名空间
 	CreateNamespace(ctx context.Context, namespace string) error
 	//删除命名空间，包含其全部键
