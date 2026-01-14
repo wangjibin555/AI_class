@@ -1,10 +1,12 @@
 package config
 
 import (
+	"AI_class/pkg/logger"
 	"AI_class/pkg/provider"
 	"context"
 	"fmt"
 	"sync"
+	"time"
 )
 
 // 客户端核心
@@ -18,6 +20,10 @@ type ConfigClient struct {
 	namespaces map[string]interface{}
 	mu         sync.RWMutex
 	opts       *ClientOptions
+
+	//监听器
+	watcher     map[string][]NamespaceWatchCallback
+	cancelFuncs map[string]provider.CancelFunc
 }
 
 type ClientOptions struct {
@@ -40,12 +46,12 @@ func Init(ctx context.Context, p provider.ConfigProvider, opts ...ClientOption) 
 			Environment: "dev",
 			EnableCache: true,
 		}
-
 		for _, opt := range opts {
 			opt(option)
 		}
 
 		var cache Cache
+		// 这个地方指定当前究竟使用的是哪个实现层
 		if option.EnableCache {
 			cache = NewMemoryCache(option.CacheOptions...)
 		}
@@ -148,4 +154,47 @@ func WithEnvironment(env string) ClientOption {
 	return func(o *ClientOptions) {
 		o.Environment = env
 	}
+}
+
+// Shutdown 关闭配置客户端，清理所有资源
+// 应该在服务关闭时调用，确保所有监听器和缓存正确清理
+//
+// 参数：
+// timeout: 清理超时时间，0 表示无限等待
+func Shutdown(timeout time.Duration) {
+	if gloableClient == nil {
+		return
+	}
+
+	logger.Info("Shutting down config client...")
+
+	// 1. 停止所有监听器
+	gloableClient.StopAllWatchers()
+	logger.Info("All watchers stopped")
+
+	// 2. 清理缓存
+	if gloableClient.cache != nil {
+		ctx := context.Background()
+		if timeout > 0 {
+			var cancel context.CancelFunc
+			ctx, cancel = context.WithTimeout(ctx, timeout)
+			defer cancel()
+		}
+
+		if err := gloableClient.cache.Clear(ctx); err != nil {
+			logger.Error("Failed to clear cache: %v", err)
+		} else {
+			logger.Info("Cache cleared")
+		}
+	}
+
+	// 3. 关闭 Provider
+	if closer, ok := gloableClient.provider.(interface{ Close() error }); ok {
+		if err := closer.Close(); err != nil {
+			logger.Error("Failed to close provider: %v", err)
+		} else {
+			logger.Info("Provider closed")
+		}
+	}
+	logger.Info("Config client shutdown completed")
 }

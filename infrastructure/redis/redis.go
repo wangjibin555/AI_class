@@ -71,6 +71,7 @@ func newRedisClient(name, addr, password string) *RedisClient {
 		//连接建立
 		Dial: func() (redis.Conn, error) {
 			c, err := redis.Dial("tcp", addr,
+				redis.DialClientName(name),
 				redis.DialPassword(password),
 				redis.DialConnectTimeout(dialTimeout),
 				redis.DialReadTimeout(clientReadTimeout),
@@ -282,4 +283,11 @@ func (p *RedisPipeline) GetError() error {
 // Count 获取Pipeline中命令的数量
 func (p *RedisPipeline) Count() int {
 	return p.count
+}
+
+func NewRedisClientWithContext(ctx context.Context, pool *redis.Pool) *RedisClient {
+	return &RedisClient{
+		ctx:  ctx,
+		pool: pool,
+	}
 }

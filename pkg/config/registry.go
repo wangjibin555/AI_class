@@ -1,12 +1,13 @@
 package config
 
+//命名空间注册器
 import (
 	"encoding/json"
 	"fmt"
 	"sync"
 )
 
-// NamespaceParseFunc 命名空间解析函数
+// 命名空间解析函数
 type NamespaceParseFunc func() interface{}
 
 var (
@@ -14,7 +15,7 @@ var (
 	registryMu        sync.RWMutex
 )
 
-// RegisterNamespace 注册命名空间
+// 注册命名空间
 func RegisterNamespace(name string, parseFunc NamespaceParseFunc) {
 	registryMu.Lock()
 	defer registryMu.Unlock()
@@ -22,7 +23,7 @@ func RegisterNamespace(name string, parseFunc NamespaceParseFunc) {
 	namespaceRegistry[name] = parseFunc
 }
 
-// GetRegisteredNamespaces 获取所有已注册的命名空间
+// 获取所有已注册的命名空间
 func GetRegisteredNamespaces() []string {
 	registryMu.RLock()
 	defer registryMu.RUnlock()
@@ -35,7 +36,7 @@ func GetRegisteredNamespaces() []string {
 	return namespaces
 }
 
-// parseNamespaceConfig 解析命名空间配置
+// 解析命名空间配置
 func parseNamespaceConfig(namespace string, data []byte) (interface{}, error) {
 	registryMu.RLock()
 	parseFunc, exists := namespaceRegistry[namespace]
@@ -45,7 +46,6 @@ func parseNamespaceConfig(namespace string, data []byte) (interface{}, error) {
 		return nil, fmt.Errorf("namespace %s not registered", namespace)
 	}
 
-	// 创建配置对象
 	config := parseFunc()
 
 	// JSON 反序列化
@@ -54,4 +54,12 @@ func parseNamespaceConfig(namespace string, data []byte) (interface{}, error) {
 	}
 
 	return config, nil
+}
+
+// 检查命名空间是否已注册
+func isNamespaceRegistered(namespace string) bool {
+	registryMu.RLock()
+	defer registryMu.RUnlock()
+	_, exists := namespaceRegistry[namespace]
+	return exists
 }

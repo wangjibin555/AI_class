@@ -5,9 +5,11 @@ go 1.24.0
 toolchain go1.24.6
 
 require (
+	github.com/cloudflare/tableflip v1.2.3
 	github.com/gomodule/redigo v1.8.9
 	github.com/google/uuid v1.6.0
 	github.com/minio/minio-go/v7 v7.0.97
+	github.com/sirupsen/logrus v1.9.3
 	golang.org/x/time v0.14.0
 	google.golang.org/protobuf v1.36.10
 	gorm.io/driver/mysql v1.6.0
@@ -16,7 +18,6 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/go-ini/ini v1.67.0 // indirect
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
