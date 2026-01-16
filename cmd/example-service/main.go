@@ -6,11 +6,16 @@ import (
 	"AI_class/pkg/config/namespace/database"
 	"AI_class/pkg/config/namespace/server"
 	"AI_class/pkg/graceful"
+	httpServer "AI_class/pkg/http/server"
+	"AI_class/pkg/http/server/middleware"
+	routes "AI_class/pkg/http/server/route"
 	"AI_class/pkg/logger"
 	"context"
 	"fmt"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/cloudflare/tableflip"
@@ -24,6 +29,8 @@ func main() {
 	defer upg.Stop()
 
 	ctx := context.Background()
+
+	// 1. 初始化配置中心
 	err = config.Bootstrap(ctx,
 		config.WithConfigpath("./config"),
 		config.WithEnvionment("dev"),
@@ -39,23 +46,23 @@ func main() {
 		logger.Error("Bootstrap failed: %v", err)
 	}
 
-	//初始化基础设施
+	// 2. 初始化基础设施
 	if err := initInfrastructure(ctx); err != nil {
 		logger.Error("Init infrastructure failed: %v", err)
 	}
 
-	//启动服务
-	ln, err := upg.Listen("tcp", "8080")
+	// 3. 构建 HTTP 服务器
+	httpServer, err := buildHTTPServer(ctx)
+	if err != nil {
+		logger.Error("Failed to build HTTP server: %v", err)
+	}
+
+	// 4. 启动服务器
+	ln, err := upg.Listen("tcp", getListenAddress(ctx))
 	if err != nil {
 		logger.Error("Listen failed: %v", err)
 	}
-	defer ln.Close()
 
-	//在goroutine中启动HTTP服务器
-	httpServer, err := createHTTPServer(ctx)
-	if err != nil {
-		logger.Error("Failed to create HTTP server: %v", err)
-	}
 	go func() {
 		logger.Info("HTTP server starting on %s", ln.Addr().String())
 		if err := httpServer.Serve(ln); err != nil && err != http.ErrServerClosed {
@@ -63,20 +70,115 @@ func main() {
 		}
 	}()
 
-	//通知tableflip准备就绪
+	// 5. 注册关闭函数
+	graceful.RegisterAllFunc(func() {
+		logger.Info("Shutting down HTTP server...")
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
+		if err := httpServer.Shutdown(shutdownCtx); err != nil {
+			logger.Error("HTTP server shutdown error: %v", err)
+		}
+	})
+
+	// 6. 通知 tableflip 准备就绪
 	if err = upg.Ready(); err != nil {
 		panic(err)
 	}
 	logger.Info("Service ready, PID: %d", os.Getpid())
 
-	//等待退出信号
-	<-upg.Exit()
+	// 7. 等待退出信号
+	//<-upg.Exit()
+	waitForShutdown(upg)
 
-	//执行平滑关闭
+	// 8. 执行平滑关闭
 	logger.Info("Shutting down service...")
 	graceful.ClearAllFunc(30 * time.Second)
 
 	logger.Info("Service shutdown completed")
+}
+
+// buildHTTPServer 构建 HTTP 服务器（使用新架构）
+func buildHTTPServer(ctx context.Context) (*http.Server, error) {
+	// 1. 创建路由器
+	router := httpServer.NewRouter()
+
+	// 2. 创建中间件管理器
+	middlewareMgr := middleware.NewManager(&configProvider{})
+
+	// 3. 创建路由注册器
+	routeRegistry := routes.NewRegistry()
+
+	// 注册各个路由模块
+	routeRegistry.Register(routes.NewHealthRoutes())
+	routeRegistry.Register(routes.NewAPIRoutes(nil)) // 可以注入依赖
+
+	// 注册所有路由
+	if err := routeRegistry.RegisterAll(router); err != nil {
+		return nil, fmt.Errorf("failed to register routes: %w", err)
+	}
+
+	// 4. 获取服务器配置
+	serverConfig := getServerConfig(ctx)
+
+	// 5. 构建服务器
+	server, err := httpServer.NewServerBuilder().
+		WithRouter(router).
+		WithMiddleware(middlewareMgr.Recovery()).       // 最外层：恢复
+		WithMiddleware(middlewareMgr.RequestLogging()). // 中间层：日志
+		WithMiddleware(middlewareMgr.CORS()).           // 内层：CORS
+		WithConfig(serverConfig).
+		Build()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return server, nil
+}
+
+// configProvider 配置提供者实现
+type configProvider struct{}
+
+func (p *configProvider) Get(key string) (interface{}, error) {
+	return config.Get(key)
+}
+
+// getServerConfig 获取服务器配置
+func getServerConfig(ctx context.Context) *httpServer.ServerConfig {
+	cfg, err := config.Get("server")
+	if err != nil {
+		return &httpServer.ServerConfig{
+			Addr:              ":8080",
+			ReadTimeout:       30,
+			WriteTimeout:      30,
+			ReadHeaderTimeout: 45,
+			MaxHeaderBytes:    1 << 20,
+		}
+	}
+
+	serverConfig := cfg.(*server.ServerConfig)
+	httpConfig := serverConfig.HTTP
+
+	return &httpServer.ServerConfig{
+		Addr:              fmt.Sprintf("%s:%d", httpConfig.Host, httpConfig.Port),
+		ReadTimeout:       httpConfig.ReadTimeout,
+		WriteTimeout:      httpConfig.WriteTimeout,
+		ReadHeaderTimeout: 45,
+		MaxHeaderBytes:    httpConfig.MaxHeaderBytes,
+	}
+}
+
+func getListenAddress(ctx context.Context) string {
+	cfg, err := config.Get("server")
+	if err == nil {
+		serverConfig := cfg.(*server.ServerConfig)
+		httpConfig := serverConfig.HTTP
+		if httpConfig.Host != "" && httpConfig.Port > 0 {
+			return fmt.Sprintf("%s:%d", httpConfig.Host, httpConfig.Port)
+		}
+	}
+	return ":8080"
 }
 
 func initInfrastructure(ctx context.Context) error {
@@ -103,198 +205,31 @@ func initInfrastructure(ctx context.Context) error {
 	return nil
 }
 
-// createHTTPServer 创建 HTTP 服务器
-func createHTTPServer(ctx context.Context) (*http.Server, error) {
-	// 1. 创建路由处理器
-	r := createRouter(ctx)
+func waitForShutdown(upg *tableflip.Upgrader) {
+	// 创建信号通道
+	sigChan := make(chan os.Signal, 1)
 
-	// 2. 从配置中心获取服务器配置
-	cfg, err := config.Get("server")
-	if err != nil {
-		logger.Warn("Failed to get server config, using defaults: %v", err)
-		return createDefaultHTTPServer(r), nil
-	}
+	// 注册要监听的信号
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 
-	serverConfig := cfg.(*server.ServerConfig)
-	httpConfig := serverConfig.HTTP
+	// 创建退出通道
+	exitChan := make(chan struct{})
 
-	// 3. 创建 HTTP 服务器（使用配置中心的配置）
-	httpServer := &http.Server{
-		Addr:              fmt.Sprintf("%s:%d", httpConfig.Host, httpConfig.Port),
-		Handler:           r,
-		ReadTimeout:       time.Duration(httpConfig.ReadTimeout) * time.Second,
-		WriteTimeout:      time.Duration(httpConfig.WriteTimeout) * time.Second,
-		ReadHeaderTimeout: 45 * time.Second, // 固定值，防止慢客户端攻击
-		MaxHeaderBytes:    httpConfig.MaxHeaderBytes,
-	}
+	// 启动 goroutine 监听 tableflip 退出信号
+	go func() {
+		<-upg.Exit()
+		logger.Info("Received tableflip exit signal")
+		close(exitChan)
+	}()
 
-	logger.Info("HTTP server configured: %s:%d", httpConfig.Host, httpConfig.Port)
-	return httpServer, nil
-}
+	// 启动 goroutine 监听系统信号
+	go func() {
+		sig := <-sigChan
+		logger.Info("Received system signal: %v", sig)
+		close(exitChan)
+	}()
 
-// createDefaultHTTPServer 创建默认 HTTP 服务器（配置中心不可用时使用）
-func createDefaultHTTPServer(handler http.Handler) *http.Server {
-	return &http.Server{
-		Addr:              ":8080",
-		Handler:           handler,
-		ReadTimeout:       30 * time.Second,
-		WriteTimeout:      30 * time.Second,
-		ReadHeaderTimeout: 45 * time.Second,
-		MaxHeaderBytes:    1 << 20, // 1MB
-	}
-}
-
-// createRouter 创建路由处理器
-func createRouter(ctx context.Context) http.Handler {
-	mux := http.NewServeMux()
-
-	// ============ 健康检查接口 ============
-	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"status":"ok","service":"example-service"}`))
-	})
-
-	// ============ 就绪检查接口（用于 Kubernetes）============
-	mux.HandleFunc("/ready", func(w http.ResponseWriter, r *http.Request) {
-		// 可以在这里检查依赖服务（Redis、MySQL等）是否就绪
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"status":"ready"}`))
-	})
-
-	// ============ 存活检查接口（用于 Kubernetes）============
-	mux.HandleFunc("/live", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"status":"alive"}`))
-	})
-
-	// ============ API 路由 ============
-	apiHandler := createAPIHandler(ctx)
-	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", apiHandler))
-
-	// ============ 添加中间件 ============
-	// 1. 添加 CORS 支持（如果配置启用）
-	handler := addCORSIfEnabled(mux, ctx)
-
-	// 2. 添加请求日志中间件
-	handler = addRequestLogging(handler)
-
-	// 3. 添加 HTTP/3 Alt-Svc 头（如果需要）
-	handler = addAltSvcHeader(handler)
-
-	return handler
-}
-
-// createAPIHandler 创建 API 处理器
-func createAPIHandler(ctx context.Context) http.Handler {
-	mux := http.NewServeMux()
-
-	// 示例 API 路由
-	mux.HandleFunc("/example", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"message":"example endpoint","method":"` + r.Method + `"}`))
-	})
-
-	// 配置信息接口（可选，生产环境建议移除或加权限）
-	mux.HandleFunc("/config/info", func(w http.ResponseWriter, r *http.Request) {
-		cfg, err := config.Get("server")
-		if err != nil {
-			http.Error(w, `{"error":"config not available"}`, http.StatusInternalServerError)
-			return
-		}
-
-		serverConfig := cfg.(*server.ServerConfig)
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(fmt.Sprintf(`{"name":"%s","env":"%s"}`,
-			serverConfig.Name, serverConfig.Env)))
-	})
-
-	return mux
-}
-
-// addCORSIfEnabled 如果配置启用 CORS，则添加 CORS 中间件
-func addCORSIfEnabled(handler http.Handler, ctx context.Context) http.Handler {
-	cfg, err := config.Get("server")
-	if err != nil {
-		return handler
-	}
-
-	serverConfig := cfg.(*server.ServerConfig)
-	if !serverConfig.HTTP.EnableCORS {
-		return handler
-	}
-
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// 设置 CORS 头
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-
-		// 处理预检请求
-		if r.Method == "OPTIONS" {
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-
-		handler.ServeHTTP(w, r)
-	})
-}
-
-// addRequestLogging 添加请求日志中间件
-func addRequestLogging(handler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
-
-		// 创建响应写入器，用于记录状态码
-		rw := &responseWriter{ResponseWriter: w, statusCode: http.StatusOK}
-
-		handler.ServeHTTP(rw, r)
-
-		duration := time.Since(start)
-		logger.Info("HTTP %s %s %d %v", r.Method, r.URL.Path, rw.statusCode, duration)
-	})
-}
-
-// responseWriter 包装 http.ResponseWriter，用于记录状态码
-type responseWriter struct {
-	http.ResponseWriter
-	statusCode int
-}
-
-func (rw *responseWriter) WriteHeader(code int) {
-	rw.statusCode = code
-	rw.ResponseWriter.WriteHeader(code)
-}
-
-// addAltSvcHeader 添加 HTTP/3 Alt-Svc 头
-func addAltSvcHeader(handler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// 添加 HTTP/3 支持头（如果需要）
-		w.Header().Set("Alt-Svc", "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000")
-		handler.ServeHTTP(w, r)
-	})
-}
-
-// getListenAddress 获取监听地址
-func getListenAddress(ctx context.Context) string {
-	cfg, err := config.Get("server")
-	if err == nil {
-		serverConfig := cfg.(*server.ServerConfig)
-		httpConfig := serverConfig.HTTP
-		if httpConfig.Host != "" && httpConfig.Port > 0 {
-			return fmt.Sprintf("%s:%d", httpConfig.Host, httpConfig.Port)
-		}
-	}
-
-	// 从环境变量获取
-	if addr := os.Getenv("HTTP_ADDR"); addr != "" {
-		return addr
-	}
-
-	// 默认地址
-	return ":8080"
+	// 等待任一退出信号
+	<-exitChan
+	logger.Info("Exit signal received, starting graceful shutdown...")
 }

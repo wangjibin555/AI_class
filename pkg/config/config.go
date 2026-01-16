@@ -74,7 +74,7 @@ func Get(namespace string) (interface{}, error) {
 	if gloableClient == nil {
 		return nil, fmt.Errorf(ErrGloableClient, namespace)
 	}
-	return gloableClient.GetNamespace(namespace), nil
+	return gloableClient.GetNamespace(namespace)
 }
 
 func (c *ConfigClient) GetNamespace(namespace string) (interface{}, error) {

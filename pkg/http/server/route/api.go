@@ -23,7 +23,7 @@ func (r *APIRoutes) RegisterRoutes(router server.Router) error {
 
 	apiGroup.Register("GET", "/example", r.Example)
 	apiGroup.Register("GET", "/users", r.GetUsers)
-	apiGroup.Register("POST", "/users", r.CreateUser)
+	apiGroup.Register("POST", "/user", r.CreateUser)
 
 	return nil
 }
