@@ -1,0 +1,29 @@
+{
+  "server": {
+    "http": {
+      "host": "0.0.0.0",
+      "port": 8080,
+      "read_timeout": 30,
+      "write_timeout": 30,
+      "max_header_bytes": 1048576
+    }
+  },
+  "database": {
+    "mysql": {
+      "host": "localhost",
+      "port": 3306,
+      "username": "root",
+      "password": "password",
+      "database": "ppt_gen",
+      "chartset": "utf8mb4",
+      "max_open_conns": 100,
+      "max_idle_conns": 10
+    },
+    "redis": {
+      "host": "localhost",
+      "port": 6379,
+      "password": "",
+      "db": 0
+    }
+  }
+}

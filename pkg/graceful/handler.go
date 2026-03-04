@@ -32,7 +32,7 @@ func RegisterAllFunc(registerfunc ...HandlerFunc) {
 	handlers = append(handlers, registerfunc...)
 }
 
-// 统一触发清理执行
+// 统一触发清理执行（pprof转存）
 func ClearAllFunc(waitTimeout time.Duration, opts ...Opt) {
 	option := appleOpt(opts)
 	waitGroup := sync.WaitGroup{}
@@ -64,6 +64,7 @@ func ClearAllFunc(waitTimeout time.Duration, opts ...Opt) {
 		} else {
 			logrus.Errorln("ClearAllFunc timeout:", waitTimeout)
 		}
+		// pprof转存
 		buf := make([]byte, pprofBuffSize)
 		n := runtime.Stack(buf, true)
 		buf = buf[:n]
